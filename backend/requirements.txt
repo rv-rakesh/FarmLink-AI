@@ -1,0 +1,15 @@
+Flask==3.0.3
+flask-cors==4.0.1
+Werkzeug==3.0.3
+PyJWT==2.9.0
+pymongo==4.8.0
+mongomock==4.1.2
+prophet==1.1.6
+scikit-learn==1.5.2
+pandas==2.2.3
+numpy==1.26.4
+python-dotenv==1.0.1
+pytest==8.3.3
+gunicorn==23.0.0
+cmdstanpy==1.2.4
+setuptools>=70.0.0,<81

@@ -1,0 +1,118 @@
+{
+  "appName": "FarmLink AI",
+  "tagline": "Sell your harvest at a fair price — no middlemen.",
+  "offline": "Offline Mode (Cached Data)",
+  "nav": {
+    "home": "Home",
+    "login": "Log in",
+    "signup": "Create account",
+    "logout": "Log out",
+    "dashboard": "Dashboard",
+    "newListing": "New listing",
+    "voice": "Voice (simulator)",
+    "sms": "SMS (simulator)",
+    "verify": "Verify GSTIN",
+    "orders": "Orders"
+  },
+  "roles": {
+    "farmer": "Farmer",
+    "buyer": "Bulk buyer",
+    "admin": "Admin"
+  },
+  "landing": {
+    "heroTitle": "Keep more of what your crop is worth.",
+    "heroBody": "Enter crop, quantity and grade. AI suggests a fair price band from mandi trends, then matches you with verified buyers. Pickup, escrow and payment stay on the platform.",
+    "startFarmer": "I am a farmer",
+    "startBuyer": "I am a buyer",
+    "howTitle": "How it works",
+    "step1": "List your crop",
+    "step1b": "Form, voice call, or SMS — large buttons, simple words.",
+    "step2": "See a fair price",
+    "step2b": "Prophet forecast plus a safe variance band. You pick an ask inside the band.",
+    "step3": "Match buyers",
+    "step3b": "Nearby verified buyers. Large lots split automatically.",
+    "step4": "Track & get paid",
+    "step4b": "Visual pickup route. Escrow holds money until delivery, then releases to your bank.",
+    "calcTitle": "Earnings calculator",
+    "calcHint": "Typical mandi path keeps 30–40% with traders. FarmLink shows a fairer take-home.",
+    "crop": "Crop",
+    "qty": "Quantity (quintals)",
+    "mandiShare": "After middlemen (est.)",
+    "farmlinkShare": "With FarmLink (est.)",
+    "youKeep": "You keep extra",
+    "demoNote": "Demo accounts are ready — no signup required to explore."
+  },
+  "auth": {
+    "welcomeBack": "Welcome back",
+    "create": "Create your FarmLink account",
+    "phone": "Mobile number",
+    "password": "Password",
+    "name": "Full name",
+    "village": "Village",
+    "district": "District",
+    "gstin": "GSTIN",
+    "business": "Business name",
+    "role": "I am a",
+    "submitLogin": "Log in",
+    "submitSignup": "Create account",
+    "demoFarmer": "Demo farmer",
+    "demoBuyer": "Demo buyer",
+    "demoAdmin": "Demo admin"
+  },
+  "listing": {
+    "title": "Create a crop listing",
+    "subtitle": "AI will show a fair price before you publish.",
+    "quality": "Quality grade",
+    "harvest": "Harvest date",
+    "ask": "Your asking price (₹ / quintal)",
+    "preview": "Get AI price",
+    "publish": "Publish listing",
+    "band": "Recommended band",
+    "basis": "Why this price"
+  },
+  "farmer": {
+    "hello": "Namaste",
+    "active": "Active listings",
+    "alerts": "Wastage alerts",
+    "matches": "Matched buyers",
+    "trends": "Cached price trends",
+    "empty": "No listings yet. Create one to see matches."
+  },
+  "buyer": {
+    "verifyFirst": "Verify your GSTIN to receive matches.",
+    "feed": "Listings that fit your demand",
+    "verified": "Verified buyer"
+  },
+  "order": {
+    "track": "Order tracking",
+    "escrow": "Escrow",
+    "release": "Release payment to farmer",
+    "advance": "Mark next status"
+  },
+  "admin": {
+    "title": "Platform overview",
+    "pending": "Buyer verification queue",
+    "flags": "Escrow / transaction flags",
+    "approve": "Approve"
+  },
+  "sim": {
+    "voiceBadge": "Web Simulator (Production: Bhashini/Twilio).",
+    "smsBadge": "Web Simulator (Production: MSG91).",
+    "voiceTitle": "IVR voice assistant",
+    "smsTitle": "SMS command tester",
+    "smsHint": "Try: LIST WHEAT 50 A NASHIK",
+    "send": "Send",
+    "call": "Start call",
+    "speak": "Speak / type reply"
+  },
+  "status": {
+    "listed": "Listed",
+    "matched": "Matched",
+    "in_transit": "In transit",
+    "delivered": "Delivered",
+    "payment_released": "Paid",
+    "escrow_held": "In escrow",
+    "released": "Released",
+    "completed": "Completed"
+  }
+}

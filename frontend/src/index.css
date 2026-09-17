@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background-image:
+    radial-gradient(1200px 500px at 10% -10%, rgba(64, 145, 108, 0.18), transparent),
+    radial-gradient(900px 400px at 100% 0%, rgba(224, 159, 62, 0.16), transparent);
+  min-height: 100vh;
+}
+@layer components{
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-base font-semibold min-h-12 transition active:scale-[0.99];
+  }
+
+  .btn-primary {
+    @apply btn bg-leaf-900 text-cream-50 hover:bg-leaf-700 shadow-card;
+  }
+
+  .btn-gold {
+    @apply btn bg-harvest-500 text-soil-950 hover:bg-harvest-400;
+  }
+
+  .btn-ghost {
+    @apply btn border-2 border-leaf-900 text-leaf-900 bg-white/70;
+  }
+
+  .field {
+    @apply w-full rounded-2xl border-2 border-leaf-900/15 bg-white px-4 py-3 text-lg outline-none focus:border-leaf-500;
+  }
+
+  .card {
+    @apply rounded-3xl bg-white/90 border border-leaf-900/10 shadow-card p-5 md:p-6;
+  }
+
+  .label {
+    @apply block text-sm font-semibold text-leaf-900 mb-1;
+  }
+}
