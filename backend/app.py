@@ -23,7 +23,18 @@ from flask import g
 
 def create_app():
     app = Flask(__name__)
-    CORS(app, resources={r"/api/*": {"origins": Config.FRONTEND_ORIGIN}}, supports_credentials=True)
+    CORS(
+    app,
+    resources={
+        "/api/*": {
+            "origins": [
+                Config.FRONTEND_ORIGIN,
+                "https://farmlink-ai-1.onrender.com",
+            ]
+        }
+    },
+    supports_credentials=True,
+)
 
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(listings_bp, url_prefix="/api/listings")
