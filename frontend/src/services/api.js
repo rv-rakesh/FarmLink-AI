@@ -2,7 +2,7 @@ import axios from "axios";
 import { cachePrice, priceCacheKey, readCachedPrice } from "../utils/offlineStorage";
 
 export const api = axios.create({
-  baseURL: "",
+  baseURL: "https://farmlink-ai-40vh.onrender.com",
   timeout: 60000,
 });
 
