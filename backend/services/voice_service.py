@@ -1,5 +1,6 @@
 """IVR prompt + STT/TTS parser. Bhashini adapter is a stub for later drop-in."""
 import re
+from google import genai
 from config import Config
 
 CROPS = {c.lower(): c for c in Config.CROPS}
@@ -110,49 +111,163 @@ def prompt(lang, key, **kwargs):
 
 
 def next_ivr_step(session, utterance, language="en"):
+    """
+    Gemini-powered NLU for FarmLink voice flow.
+    Gemini extracts crop, quantity, grade, district and confirmation intent.
+    """
+
     adapter = BhashiniAdapterStub()
     heard = adapter.transcribe(utterance, language)
+
     step = session.get("step", "welcome")
     data = session.get("data") or {}
 
-    if step == "welcome":
-        crop = parse_crop(heard)
-        if not crop:
-            return {**session, "reply": prompt(language, "retry"), "step": "welcome"}
-        data["crop"] = crop
-        return {"step": "qty", "data": data, "reply": prompt(language, "qty")}
-    if step == "qty":
-        qty = parse_qty(heard)
-        if not qty:
-            return {**session, "data": data, "reply": prompt(language, "retry"), "step": "qty"}
-        data["quantity"] = qty
-        return {"step": "grade", "data": data, "reply": prompt(language, "grade")}
-    if step == "grade":
-        grade = parse_grade(heard)
-        if not grade:
-            return {**session, "data": data, "reply": prompt(language, "retry"), "step": "grade"}
-        data["quality"] = grade
-        return {"step": "district", "data": data, "reply": prompt(language, "district")}
-    if step == "district":
-        district = parse_district(heard)
-        if not district:
-            return {**session, "data": data, "reply": prompt(language, "retry"), "step": "district"}
-        data["district"] = district
+    try:
+        client = genai.Client(api_key=Config.GEMINI_API_KEY)
+
+        prompt_text = f"""
+You are the voice assistant for FarmLink AI, an agricultural marketplace.
+
+The farmer said:
+"{heard}"
+
+Current conversation step:
+"{step}"
+
+Existing data:
+{data}
+
+Extract the information relevant to the current step.
+
+Return ONLY valid JSON in this exact format:
+{{
+  "crop": null,
+  "quantity": null,
+  "grade": null,
+  "district": null,
+  "confirmed": null
+}}
+
+Rules:
+- crop must be one of: Wheat, Rice, Potato, Tomato, Cotton
+- quantity must be a number in quintals
+- grade must be A, B, or C
+- district should be the Indian district name if mentioned
+- confirmed should be true only if the farmer clearly agrees
+- use null when information is not present
+"""
+
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt_text,
+        )
+
+        import json
+
+        raw = response.text.strip()
+        raw = raw.replace("```json", "").replace("```", "").strip()
+        extracted = json.loads(raw)
+
+        if extracted.get("crop"):
+            data["crop"] = extracted["crop"]
+
+        if extracted.get("quantity") is not None:
+            data["quantity"] = float(extracted["quantity"])
+
+        if extracted.get("grade"):
+            data["quality"] = extracted["grade"]
+
+        if extracted.get("district"):
+            data["district"] = extracted["district"]
+
+        if step == "welcome":
+            if data.get("crop"):
+                return {
+                    "step": "qty",
+                    "data": data,
+                    "reply": prompt(language, "qty"),
+                }
+
+            return {
+                **session,
+                "step": "welcome",
+                "data": data,
+                "reply": prompt(language, "retry"),
+            }
+
+        if step == "qty":
+            if data.get("quantity") is not None:
+                return {
+                    "step": "grade",
+                    "data": data,
+                    "reply": prompt(language, "grade"),
+                }
+
+            return {
+                **session,
+                "step": "qty",
+                "data": data,
+                "reply": prompt(language, "retry"),
+            }
+
+        if step == "grade":
+            if data.get("quality"):
+                return {
+                    "step": "district",
+                    "data": data,
+                    "reply": prompt(language, "district"),
+                }
+
+            return {
+                **session,
+                "step": "grade",
+                "data": data,
+                "reply": prompt(language, "retry"),
+            }
+
+        if step == "district":
+            if data.get("district"):
+                return {
+                    "step": "confirm",
+                    "data": data,
+                    "reply": prompt(
+                        language,
+                        "confirm",
+                        crop=data.get("crop"),
+                        qty=data.get("quantity"),
+                        grade=data.get("quality"),
+                        district=data.get("district"),
+                    ),
+                }
+
+            return {
+                **session,
+                "step": "district",
+                "data": data,
+                "reply": prompt(language, "retry"),
+            }
+
+        if step == "confirm":
+            if extracted.get("confirmed") is True:
+                return {
+                    "step": "price",
+                    "data": data,
+                    "reply": None,
+                    "ready_for_price": True,
+                }
+
+            return {
+                "step": "welcome",
+                "data": {},
+                "reply": prompt(language, "welcome"),
+            }
+
+    except Exception as e:
+        print("Gemini NLU error:", e)
+
         return {
-            "step": "confirm",
+            **session,
+            "step": step,
             "data": data,
-            "reply": prompt(
-                language,
-                "confirm",
-                crop=data["crop"],
-                qty=data["quantity"],
-                grade=data["quality"],
-                district=district,
-            ),
+            "reply": prompt(language, "retry"),
         }
-    if step == "confirm":
-        yes = heard.lower() in {"yes", "haan", "ha", "ok", "confirm", "होय", "हाँ", "y"}
-        if not yes:
-            return {"step": "welcome", "data": {}, "reply": prompt(language, "welcome")}
-        return {"step": "price", "data": data, "reply": None, "ready_for_price": True}
-    return {"step": "welcome", "data": {}, "reply": prompt(language, "welcome")}
