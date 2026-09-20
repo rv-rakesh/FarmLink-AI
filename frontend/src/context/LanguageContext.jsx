@@ -1,24 +1,86 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
+
 import en from "../i18n/en.json";
 import hi from "../i18n/hi.json";
 import mr from "../i18n/mr.json";
 
-const packs = { en, hi, mr };
+const packs = {
+  en,
+  hi,
+  mr,
+};
+
+const SUPPORTED_LANGUAGES = ["en", "hi", "mr"];
+
 const LanguageContext = createContext(null);
 
+function getInitialLanguage() {
+  try {
+    const saved = localStorage.getItem("fl_lang");
+
+    if (SUPPORTED_LANGUAGES.includes(saved)) {
+      return saved;
+    }
+  } catch (e) {
+    // Ignore localStorage errors and use English.
+  }
+
+  return "en";
+}
+
 export function LanguageProvider({ children }) {
-  const [lang, setLang] = useState(localStorage.getItem("fl_lang") || "en");
+  const [lang, setLangState] = useState(
+    getInitialLanguage
+  );
+
+  const setLang = (next) => {
+    const normalized = SUPPORTED_LANGUAGES.includes(next)
+      ? next
+      : "en";
+
+    setLangState(normalized);
+
+    try {
+      localStorage.setItem(
+        "fl_lang",
+        normalized
+      );
+    } catch (e) {
+      // Ignore localStorage errors.
+    }
+  };
+
   const value = useMemo(() => {
-    const t = packs[lang] || en;
-    const set = (next) => {
-      setLang(next);
-      localStorage.setItem("fl_lang", next);
+    const t = packs[lang] || packs.en;
+
+    return {
+      lang,
+      setLang,
+      t,
+      languages: SUPPORTED_LANGUAGES,
     };
-    return { lang, setLang: set, t };
   }, [lang]);
-  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
+
+  return (
+    <LanguageContext.Provider value={value}>
+      {children}
+    </LanguageContext.Provider>
+  );
 }
 
 export function useLang() {
-  return useContext(LanguageContext);
+  const context = useContext(LanguageContext);
+
+  if (!context) {
+    throw new Error(
+      "useLang must be used inside LanguageProvider"
+    );
+  }
+
+  return context;
 }
