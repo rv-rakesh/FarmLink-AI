@@ -64,28 +64,6 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-/*
- * Keep local auth state clean when the backend says
- * the session is no longer valid.
- */
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error?.response?.status === 401) {
-      try {
-        localStorage.removeItem("fl_token");
-        localStorage.removeItem("fl_user");
-      } catch (e) {
-        // Ignore localStorage errors.
-      }
-
-      delete api.defaults.headers.common.Authorization;
-    }
-
-    return Promise.reject(error);
-  }
-);
-
 /* Initialize token from existing session */
 try {
   const existingToken =
