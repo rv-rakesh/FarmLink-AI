@@ -15,6 +15,8 @@ PROMPTS = {
         "grade": "What is the quality grade? A, B, or C.",
         "district": "Which district are you in?",
         "confirm": "I heard {crop}, {qty} quintals, grade {grade}, in {district}. Shall I get a fair price?",
+        "price": "Recommended price is rupees {min_p} to {max_p} per quintal. {explanation}",
+        "listed": "Your listing is live. Buyers will be matched shortly.",
         "retry": "Sorry, I did not understand. Please say that again.",
         "retry_final": "I could not understand that after two tries. The call is ending. Please start a new call and try again.",
         "no": "Okay. Let us start again. Which crop are you selling?",
@@ -25,6 +27,8 @@ PROMPTS = {
         "grade": "गुणवत्ता ग्रेड क्या है? ए, बी या सी।",
         "district": "आप किस जिले में हैं?",
         "confirm": "मैंने सुना: {crop}, {qty} क्विंटल, ग्रेड {grade}, {district}। क्या मैं उचित भाव निकालूँ?",
+        "price": "सुझाया गया भाव {min_p} से {max_p} रुपये प्रति क्विंटल है। {explanation}",
+        "listed": "आपकी लिस्टिंग लाइव है। खरीदार जल्द जोड़े जाएंगे।",
         "retry": "माफ़ कीजिए, समझ नहीं आया। कृपया फिर से बोलें।",
         "retry_final": "दो कोशिशों के बाद भी आपकी बात समझ नहीं आई। कॉल समाप्त हो रही है। कृपया नई कॉल शुरू करके फिर कोशिश करें।",
         "no": "ठीक है। फिर से शुरू करते हैं। आप कौन सी फसल बेच रहे हैं?",
@@ -35,6 +39,8 @@ PROMPTS = {
         "grade": "गुणवत्ता ग्रेड काय आहे? ए, बी किंवा सी.",
         "district": "तुम्ही कोणत्या जिल्ह्यात आहात?",
         "confirm": "मी ऐकले: {crop}, {qty} क्विंटल, ग्रेड {grade}, {district}. योग्य भाव काढू का?",
+        "price": "सुचवलेला भाव {min_p} ते {max_p} रुपये प्रति क्विंटल आहे. {explanation}",
+        "listed": "तुमची लिस्टिंग लाइव्ह आहे. खरेदीदार लवकरच जुळतील.",
         "retry": "माफ करा, समजले नाही. कृपया पुन्हा बोला.",
         "retry_final": "दोन प्रयत्नांनंतरही तुमचे बोलणे समजले नाही. कॉल संपत आहे. कृपया नवीन कॉल सुरू करून पुन्हा प्रयत्न करा.",
         "no": "ठीक आहे. पुन्हा सुरू करूया. तुम्ही कोणते पीक विकत आहात?",
@@ -65,6 +71,16 @@ DISTRICT_ALIASES = {
     "हैदराबाद": "Hyderabad", "bengaluru": "Bengaluru", "bangalore": "Bengaluru",
     "बेंगलुरु": "Bengaluru", "बंगलौर": "Bengaluru",
 }
+
+
+class BhashiniAdapterStub:
+    """Compatibility adapter used by routes.voice for browser text/STT/TTS simulation."""
+
+    def transcribe(self, audio_or_text, language="en"):
+        return str(audio_or_text or "").strip()
+
+    def synthesize(self, text, language="en"):
+        return {"tts_text": text, "provider": "bhashini_stub", "language": language}
 
 SCHEMA = {
     "type": "object",
@@ -184,7 +200,6 @@ Rules:
         config=types.GenerateContentConfig(
             response_mime_type="application/json",
             response_schema=SCHEMA,
-            temperature=0.0,
             max_output_tokens=300,
         ),
     )
