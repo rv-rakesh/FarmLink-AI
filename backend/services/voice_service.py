@@ -145,7 +145,8 @@ Return ONLY valid JSON in this exact format:
   "quantity": null,
   "grade": null,
   "district": null,
-  "confirmed": null
+  "confirmed": null,
+  "language": "en"
 }}
 
 Rules:
@@ -155,6 +156,10 @@ Rules:
 - district should be the Indian district name if mentioned
 - confirmed should be true only if the farmer clearly agrees
 - use null when information is not present
+- language must be "en", "hi", or "mr" based on the farmer's spoken language
+- Hindi or Hinglish should return "hi"
+- Marathi should return "mr"
+- English should return "en"
 """
 
         response = client.models.generate_content(
@@ -167,6 +172,7 @@ Rules:
         raw = response.text.strip()
         raw = raw.replace("```json", "").replace("```", "").strip()
         extracted = json.loads(raw)
+        language = extracted.get("language") or language
 
         if extracted.get("crop"):
             data["crop"] = extracted["crop"]
