@@ -90,12 +90,12 @@ export default function VoiceSimulator() {
             <PhoneCall size={18} />
           </span>
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-harvest-400">Toll-Free Voice Helpline</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-harvest-400">{t.sim.voiceHelpline}</p>
             <p className="font-mono font-bold text-base text-cream-50">+91 XXXXX XXXXX</p>
           </div>
         </div>
         <span className="text-xs bg-harvest-400/20 text-cream-50 px-2.5 py-1 rounded-full font-semibold">
-          Hindi · Marathi · English
+          {t.sim.languages}
         </span>
       </div>
 
@@ -105,7 +105,7 @@ export default function VoiceSimulator() {
             <Phone size={22} className="text-leaf-700" /> {t.sim.voiceTitle}
           </h2>
           <p className="text-xs text-soil-900/70 mt-0.5">
-            AI voice assistant for farmers without internet or smartphones.
+            {t.sim.voiceSubtitle}
           </p>
         </div>
         <button
@@ -114,14 +114,14 @@ export default function VoiceSimulator() {
   disabled={busy}
   onClick={() => send("", true)}
 >
-  {busy ? "Connecting..." : t.sim.call}
+  {busy ? t.sim.connecting : t.sim.call}
 </button>
       </div>
 
       <div className="h-72 overflow-y-auto rounded-2xl bg-leaf-950 p-4 text-cream-50 space-y-3">
         {log.length === 0 && (
           <div className="h-full flex items-center justify-center text-center text-xs text-cream-100/50 p-4">
-            Click 'Start Call' to connect with the FarmLink AI conversational voice assistant.
+            {t.sim.startCallHint}
           </div>
         )}
         {log.map((m, i) => (
@@ -143,7 +143,7 @@ export default function VoiceSimulator() {
             className="field text-sm"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="Type speech utterance (e.g. Wheat, 50 quintals, Grade A, Nashik)"
+            placeholder="{t.sim.typeUtterance}"
             onKeyDown={(e) => e.key === "Enter" && text && send(text)}
           />
           <button className="btn-primary shrink-0" disabled={busy || !text} onClick={() => send(text)}>
@@ -157,9 +157,9 @@ export default function VoiceSimulator() {
             className="inline-flex items-center gap-1.5 font-semibold text-leaf-700 hover:underline"
             onClick={listen}
           >
-            <Mic size={14} /> Speak via Microphone (Speech-to-Text)
+            <Mic size={14} /> {t.sim.microphone}
           </button>
-          <span className="text-soil-900/50">Audio synthesis plays automatically</span>
+          <span className="text-soil-900/50">{t.sim.audioAuto}</span>
         </div>
       </div>
     </div>
