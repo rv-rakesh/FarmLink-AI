@@ -12,8 +12,12 @@
     "newListing": "नई लिस्टिंग",
     "voice": "आवाज़ (सिम्युलेटर)",
     "sms": "एसएमएस (सिम्युलेटर)",
-    "verify": "GSTIN सत्यापन",
-    "orders": "ऑर्डर"
+    "verify": "सत्यापन",
+    "orders": "ऑर्डर",
+    "online": "ऑनलाइन",
+    "offline": "ऑफ़लाइन",
+    "language": "भाषा",
+    "admin": "एडमिन"
   },
 
   "roles": {
@@ -41,8 +45,8 @@
     "startBuyer": "खरीदार के रूप में जुड़ें",
 
     "demoLogin": "डेमो लॉगिन:",
-    "farmerDemo": "किसान (9876540001)",
-    "buyerDemo": "खरीदार (9000000001)",
+    "farmerDemo": "किसान डेमो",
+    "buyerDemo": "खरीदार डेमो",
     "adminAccess": "एडमिन एक्सेस →",
 
     "howTitle": "कैसे काम करता है",
@@ -77,7 +81,7 @@
 
     "voiceSmsService": "समर्पित वॉइस और एसएमएस सेवा",
     "noSmartphoneTitle": "स्मार्टफोन नहीं है? हमारी एआई सेवा पर कॉल या एसएमएस करें",
-    "noSmartphoneBody": "बिना इंटरनेट वाले किसान हमारी हेल्पलाइन पर कॉल या एसएमएस कर सकते हैं। हिंदी, मराठी या अंग्रेज़ी में बोलकर या सरल संदेश भेजकर फसल सूचीबद्ध करें और तुरंत मंडी भाव पाएं।",
+    "noSmartphoneBody": "बिना इंटरनेट वाले किसान हमारी हेल्पलाइन पर कॉल या एसएमएस कर सकते हैं। हिंदी, मराठी या अंग्रेज़ी में बोलकर या सरल संदेश भेजकर फसल सूचीबद्ध करें और मंडी भाव पाएं।",
     "tryVoiceDemo": "वॉइस आईवीआर डेमो आज़माएं",
     "trySmsDemo": "एसएमएस सिम्युलेटर आज़माएं",
     "exampleSmsCommands": "उदाहरण एसएमएस कमांड:",
@@ -119,48 +123,342 @@
     "submitSignup": "खाता बनाएं",
     "demoFarmer": "डेमो किसान",
     "demoBuyer": "डेमो खरीदार",
-    "demoAdmin": "डेमो एडमिन"
+    "demoAdmin": "डेमो एडमिन",
+    "creating": "खाता बनाया जा रहा है...",
+    "loggingIn": "लॉग इन हो रहा है...",
+    "loginFailed": "लॉगिन असफल हुआ। कृपया अपनी जानकारी जांचें।",
+    "signupFailed": "खाता बनाने में समस्या हुई। कृपया फिर प्रयास करें।"
   },
 
   "listing": {
-    "title": "फसल लिस्टिंग बनाएं",
+    "title": "फसल की लिस्टिंग बनाएं",
     "subtitle": "प्रकाशित करने से पहले एआई उचित भाव दिखाएगा।",
     "quality": "गुणवत्ता ग्रेड",
+    "grade": "ग्रेड",
     "harvest": "कटाई की तारीख",
     "ask": "आपका भाव (₹ / क्विंटल)",
     "preview": "एआई भाव देखें",
     "publish": "लिस्टिंग प्रकाशित करें",
+    "publishing": "लिस्टिंग प्रकाशित हो रही है...",
+    "loading": "लोड हो रहा है...",
     "band": "सुझाई गई सीमा",
-    "basis": "यह भाव क्यों"
+    "basis": "यह भाव क्यों",
+    "price": "भाव",
+    "min": "न्यूनतम",
+    "max": "अधिकतम",
+    "target": "लक्ष्य",
+    "previewHint": "प्रकाशित करने से पहले सुझाया गया भाव देखने के लिए एआई भाव बटन दबाएं।",
+    "noChartData": "अभी चार्ट डेटा उपलब्ध नहीं है। मंडी इतिहास लोड करने के लिए एआई भाव देखें।",
+    "genericError": "कुछ समस्या हुई। कृपया फिर प्रयास करें।",
+    "stepList": "सूची",
+    "stepPrice": "भाव",
+    "stepMatch": "मिलान"
   },
 
   "farmer": {
     "hello": "नमस्ते",
     "active": "सक्रिय लिस्टिंग",
     "alerts": "बर्बादी चेतावनी",
-    "matches": "जोड़े गए खरीदार",
+    "matches": "मिले हुए खरीदार",
     "trends": "कैश मूल्य रुझान",
-    "empty": "अभी कोई लिस्टिंग नहीं। मैच देखने के लिए एक बनाएं।"
+    "empty": "अभी कोई लिस्टिंग नहीं। मैच देखने के लिए एक बनाएं।",
+    "dashboard": "किसान डैशबोर्ड",
+    "newListing": "नई फसल लिस्टिंग",
+    "voice": "वॉइस सहायक",
+    "sms": "एसएमएस सेवा",
+    "verification": "सत्यापन",
+    "verificationStatus": "सत्यापन स्थिति",
+    "viewMatches": "मिलान देखें",
+    "trackOrder": "ऑर्डर ट्रैक करें",
+    "loading": "आपका डैशबोर्ड लोड हो रहा है...",
+    "loadingListings": "लिस्टिंग लोड हो रही हैं...",
+    "noAlerts": "कोई सक्रिय बर्बादी चेतावनी नहीं है।",
+    "noMatches": "अभी कोई खरीदार मैच नहीं मिला।",
+    "listed": "सूचीबद्ध",
+    "crop": "फसल",
+    "quantity": "मात्रा",
+    "quality": "गुणवत्ता",
+    "district": "ज़िला",
+    "askingPrice": "मांगा गया भाव",
+    "status": "स्थिति",
+    "created": "बनाया गया",
+    "view": "देखें",
+    "verifiedBuyer": "सत्यापित खरीदार",
+    "buyersMatched": "मिले हुए खरीदार",
+    "remainingQuantity": "बाकी मात्रा",
+    "wastageRisk": "बर्बादी का जोखिम",
+    "action": "कार्रवाई"
   },
 
   "buyer": {
-    "verifyFirst": "मैच पाने के लिए GSTIN सत्यापित करें।",
+    "verifyFirst": "मैच पाने के लिए अपने व्यवसाय का सत्यापन करें।",
     "feed": "आपकी मांग से मेल खाती लिस्टिंग",
-    "verified": "सत्यापित खरीदार"
+    "verified": "सत्यापित खरीदार",
+    "dashboard": "खरीदार डैशबोर्ड",
+    "verification": "खरीदार सत्यापन",
+    "verificationStatus": "सत्यापन स्थिति",
+    "loading": "खरीदार डैशबोर्ड लोड हो रहा है...",
+    "loadingListings": "मेल खाती लिस्टिंग लोड हो रही हैं...",
+    "noListings": "अभी आपकी मांग से मेल खाने वाली कोई लिस्टिंग नहीं है।",
+    "crop": "फसल",
+    "quantity": "मात्रा",
+    "district": "ज़िला",
+    "askingPrice": "मांगा गया भाव",
+    "distance": "दूरी",
+    "farmer": "किसान",
+    "viewDetails": "विवरण देखें",
+    "contactFarmer": "किसान से संपर्क करें",
+    "contacting": "कनेक्ट हो रहा है...",
+    "contactSuccess": "इस सत्यापित मैच के लिए किसान का संपर्क विवरण उपलब्ध है।",
+    "contactFailed": "किसान से संपर्क नहीं हो सका।",
+    "verificationFailed": "सत्यापन जमा नहीं हो सका।",
+    "gstinSandboxHint": "इस सैंडबॉक्स डेमो के लिए वैध जैसा GSTIN दर्ज करें।",
+    "bankAccountReference": "बैंक खाता संदर्भ",
+    "verifying": "सत्यापन हो रहा है...",
+    "verifyNow": "अभी सत्यापित करें",
+    "quantityLabel": "खरीद की मात्रा"
+  },
+
+  "matches": {
+    "title": "मिले हुए खरीदार",
+    "loading": "मिले हुए खरीदार लोड हो रहे हैं...",
+    "loadFailed": "मिले हुए खरीदार लोड नहीं हो सके।",
+    "backDashboard": "डैशबोर्ड पर वापस जाएं",
+    "quintals": "क्विंटल",
+    "askingPrice": "मांगा गया भाव",
+    "splitLot": "बड़ी मात्रा कई सत्यापित खरीदारों में विभाजित की गई है",
+    "kmAway": "किमी दूर",
+    "gstin": "GSTIN",
+    "allocatedQuantity": "आवंटित मात्रा",
+    "noMatches": "अभी कोई सत्यापित खरीदार मैच नहीं हुआ है।",
+    "noMatchesHint": "आपकी लिस्टिंग खरीदार मिलान के लिए सक्रिय है।",
+    "remainingLot": "बाकी मात्रा",
+    "awaitingMatching": "अतिरिक्त खरीदार मिलान की प्रतीक्षा में।",
+    "estimatedGross": "अनुमानित कुल व्यापार मूल्य",
+    "directPayment": "किसान के बैंक खाते में सीधा भुगतान",
+    "confirm": "मिलान की पुष्टि करें और सौदे पर आगे बढ़ें →",
+    "connecting": "कनेक्ट हो रहा है...",
+    "confirmFailed": "इस मिलान की पुष्टि नहीं हो सकी।"
   },
 
   "order": {
     "track": "ऑर्डर ट्रैकिंग",
+    "order": "ऑर्डर",
     "escrow": "एस्क्रो",
     "release": "किसान को भुगतान जारी करें",
-    "advance": "अगली स्थिति चिह्नित करें"
+    "advance": "अगली स्थिति चिह्नित करें",
+    "loading": "सौदे का विवरण लोड हो रहा है...",
+    "notFound": "ऑर्डर का विवरण लोड नहीं हो सका।",
+    "loadFailed": "सौदे का विवरण लोड नहीं हो सका।",
+    "updateFailed": "ऑर्डर अपडेट नहीं हो सका।",
+    "backDashboard": "डैशबोर्ड पर वापस जाएं",
+    "farmerDetails": "किसान का विवरण",
+    "buyerDetails": "थोक खरीदार",
+    "farmer": "किसान",
+    "verifiedBuyer": "सत्यापित थोक खरीदार",
+    "districtFallback": "महाराष्ट्र",
+    "dealProgress": "सौदे की प्रगति",
+    "pickupScheduled": "पिकअप निर्धारित",
+    "pending": "लंबित",
+    "escrowSecured": "एस्क्रो सुरक्षित",
+    "updating": "अपडेट हो रहा है...",
+    "releasePayment": "किसान के बैंक खाते में भुगतान जारी करें ✓",
+    "farmerPaymentMessage": "फसल सफलतापूर्वक प्राप्त हो गई है। खरीदार आपके पंजीकृत बैंक खाते में भुगतान जारी कर रहा है।",
+
+    "statusListed": "सूचीबद्ध",
+    "statusMatched": "मिलान हुआ",
+    "statusInTransit": "रास्ते में",
+    "statusDelivered": "डिलीवर",
+    "statusPaymentReleased": "भुगतान जारी",
+    "statusEscrowHeld": "एस्क्रो में",
+    "statusReleased": "जारी",
+    "statusCompleted": "पूर्ण",
+    "statusPending": "लंबित",
+    "statusUnknown": "अज्ञात"
   },
 
   "admin": {
     "title": "प्लेटफ़ॉर्म सारांश",
-    "pending": "खरीदार सत्यापन कतार",
+    "pending": "लंबित",
     "flags": "एस्क्रो / लेनदेन संकेत",
-    "approve": "स्वीकृत करें"
+    "approve": "स्वीकृत करें",
+
+    "backOverview": "एडमिन सारांश पर वापस जाएं",
+    "verificationTitle": "सत्यापन प्रबंधन और ऑडिट",
+    "verificationSubtitle": "पहचान जमा, प्रमाण, भरोसे की जानकारी और सत्यापन रिकॉर्ड की समीक्षा करें।",
+    "refreshList": "सूची रीफ्रेश करें",
+    "refreshing": "रीफ्रेश हो रहा है...",
+
+    "underReview": "समीक्षा में",
+    "pendingDetails": "विवरण लंबित",
+    "fullyVerified": "पूरी तरह सत्यापित",
+    "rejected": "अस्वीकृत",
+    "suspended": "निलंबित",
+    "riskFlagged": "जोखिम चिह्नित",
+
+    "allRecords": "सभी रिकॉर्ड",
+    "underReviewTab": "समीक्षा में ⟳",
+    "verifiedTab": "सत्यापित ✓",
+    "pendingTab": "लंबित",
+    "rejectedTab": "अस्वीकृत",
+    "suspendedTab": "निलंबित",
+    "riskFlagsTab": "जोखिम संकेत ⚠",
+
+    "allRoles": "सभी भूमिकाएं",
+    "farmersOnly": "केवल किसान",
+    "buyersOnly": "केवल खरीदार",
+    "farmer": "किसान",
+    "buyer": "खरीदार",
+
+    "flaggedTitle": "चिह्नित लिस्टिंग और असामान्यताएं",
+    "noRiskFlags": "अभी कोई जोखिम संकेत नहीं मिला है।",
+    "flaggedListing": "चिह्नित लिस्टिंग",
+    "quintals": "क्विंटल",
+
+    "loadingRecords": "सत्यापन रिकॉर्ड लोड हो रहे हैं...",
+    "noRecords": "इस फ़िल्टर के लिए कोई रिकॉर्ड नहीं मिला।",
+    "phone": "फोन",
+    "district": "ज़िला",
+    "trust": "विश्वास",
+    "submitted": "जमा किया गया",
+    "viewDetails": "विवरण देखें →",
+
+    "reviewTitle": "सत्यापन समीक्षा",
+    "loadingDetails": "विवरण लोड हो रहा है...",
+    "currentStatus": "वर्तमान स्थिति",
+    "credentials": "जमा किए गए प्रमाण",
+
+    "mobileOtp": "मोबाइल ओटीपी",
+    "otpVerified": "सत्यापित ✓",
+    "otpNotVerified": "सत्यापित नहीं",
+
+    "identityKyc": "पहचान केवाईसी",
+    "kycVerified": "सत्यापित",
+    "kycPending": "केवाईसी लंबित",
+
+    "agriculturalEvidence": "कृषि प्रमाण",
+    "businessRegistration": "व्यवसाय पंजीकरण",
+    "type": "प्रकार",
+    "reference": "संदर्भ",
+    "status": "स्थिति",
+    "locationRecord": "स्थान रिकॉर्ड",
+
+    "adminNotes": "एडमिन नोट्स",
+    "notesPlaceholder": "दस्तावेज़ की वैधता या सत्यापन जांच के बारे में नोट लिखें।",
+
+    "approveSuccess": "सत्यापन सफलतापूर्वक स्वीकृत किया गया।",
+    "approveFailed": "सत्यापन स्वीकृत नहीं हो सका।",
+    "rejectSuccess": "सत्यापन अस्वीकार किया गया।",
+    "rejectFailed": "सत्यापन अस्वीकार नहीं हो सका।",
+    "suspendSuccess": "खाता निलंबित किया गया।",
+    "suspendFailed": "खाता निलंबित नहीं हो सका।",
+    "infoSuccess": "अतिरिक्त जानकारी का अनुरोध किया गया।",
+    "infoFailed": "अतिरिक्त जानकारी का अनुरोध नहीं हो सका।",
+
+    "suspendConfirm": "क्या आप वाकई इस खाते को निलंबित करना चाहते हैं?",
+    "administrativeSuspension": "प्रशासनिक निलंबन",
+    "defaultInfoRequest": "कृपया अधिक स्पष्ट सत्यापन प्रमाण प्रदान करें।",
+    "processing": "प्रक्रिया चल रही है...",
+
+    "reject": "आवेदन अस्वीकार करें",
+    "requestInfo": "जानकारी मांगें",
+    "suspend": "खाता निलंबित करें",
+    "cancel": "रद्द करें",
+
+    "rejectReasonTitle": "अस्वीकृति का कारण बताएं",
+    "rejectReasonBody": "यह संदेश उपयोगकर्ता को दिखाया जाएगा ताकि वह अपने सत्यापन विवरण ठीक कर सके।",
+    "rejectPlaceholder": "अस्वीकृति का कारण लिखें...",
+    "confirmRejection": "अस्वीकृति की पुष्टि करें"
+  },
+
+  "verification": {
+    "registered": "पंजीकृत",
+    "suspended": "निलंबित",
+    "actionRequired": "कार्रवाई आवश्यक",
+
+    "verifiedBuyer": "✓ सत्यापित खरीदार",
+    "verifiedFarmer": "✓ सत्यापित किसान",
+
+    "underReview": "समीक्षा में",
+    "identityVerified": "पहचान सत्यापित",
+    "mobileVerified": "मोबाइल सत्यापित",
+
+    "pending": "लंबित",
+    "submitted": "जमा किया गया",
+    "verified": "सत्यापित",
+    "rejected": "अस्वीकृत",
+    "unknown": "अज्ञात",
+
+    "mobileOtp": "मोबाइल ओटीपी सत्यापित",
+    "identityKyc": "पहचान केवाईसी की पुष्टि",
+    "businessEvidence": "व्यवसाय प्रमाण (GSTIN/Udyam)",
+    "agriculturalEvidence": "कृषि प्रमाण (भूमि/FPO)",
+    "adminReview": "फार्मलिंक एडमिन समीक्षा पूर्ण",
+
+    "viewDetails": "सत्यापन विवरण देखें",
+    "farmLinkTitle": "फार्मलिंक सत्यापन",
+    "trustCredentials": "विश्वास प्रमाण",
+    "accountStatus": "खाते की स्थिति",
+    "trustScore": "विश्वास स्कोर",
+    "checksTitle": "सत्यापन जांच",
+    "verifiedByFarmLink": "फार्मलिंक एआई द्वारा सत्यापित:",
+    "close": "बंद करें",
+
+    "statusTitle": "सत्यापन और विश्वास स्थिति",
+    "statusLoadFailed": "सत्यापन स्थिति लोड नहीं हो सकी।",
+    "loadingStatus": "सत्यापन स्थिति लोड हो रही है...",
+    "backDashboard": "डैशबोर्ड पर वापस जाएं",
+    "accountType": "खाते का प्रकार",
+    "registeredAs": "पंजीकरण",
+    "refreshStatus": "स्थिति रीफ्रेश करें",
+    "refreshing": "रीफ्रेश हो रहा है...",
+
+    "fullyVerified": "खाता पूरी तरह सत्यापित ✓",
+    "fullyVerifiedBody": "आपके खाते के आवश्यक सत्यापन चरण पूरे हो गए हैं और सत्यापित ट्रेडिंग सुविधाएं उपलब्ध हैं।",
+    "verifiedOn": "फार्मलिंक एआई द्वारा सत्यापित:",
+
+    "underReviewBody": "आपके जमा किए गए सत्यापन विवरण की अभी समीक्षा की जा रही है।",
+
+    "rejectedBody": "जमा किए गए सत्यापन विवरण की पुष्टि नहीं हो सकी।",
+    "resubmit": "सत्यापन विवरण फिर से जमा करें →",
+
+    "completeTitle": "पूरी सुविधाएं पाने के लिए सत्यापन पूरा करें",
+    "completeBody": "सत्यापित बैज पाने के लिए आवश्यक सत्यापन चरण पूरे करें।",
+    "continueWizard": "सत्यापन प्रक्रिया जारी रखें →",
+    "checklistTitle": "सत्यापन चरणों की सूची",
+    "goToWizard": "सत्यापन प्रक्रिया पर जाएं",
+
+    "step": "चरण",
+    "completed": "पूरा हुआ ✓",
+
+    "mobileStepTitle": "मोबाइल नंबर सत्यापन",
+    "mobileStepSubtitle": "सीधे एसएमएस और वॉइस संपर्क के लिए 6-अंकीय ओटीपी पुष्टि",
+
+    "identityStepTitle": "पहचान केवाईसी सत्यापन",
+    "identityStepSubtitle": "सरकारी पहचान संदर्भ का सत्यापन",
+
+    "businessEvidenceTitle": "व्यवसाय प्रमाण",
+    "businessEvidenceSubtitle": "GSTIN, Udyam MSME या ट्रेड लाइसेंस पंजीकरण",
+
+    "agriculturalEvidenceTitle": "कृषि प्रमाण",
+    "agriculturalEvidenceSubtitle": "किसान पंजीकरण, भूमि रिकॉर्ड या FPO सदस्यता",
+
+    "finalReviewTitle": "फार्मलिंक अंतिम समीक्षा और विश्वास स्थिति",
+    "finalReviewSubtitle": "सत्यापित मार्केटप्लेस बैज के लिए स्वचालित जोखिम जांच और एडमिन स्वीकृति"
+  },
+
+  "trust": {
+    "title": "विश्वास स्कोर",
+    "phoneVerified": "मोबाइल ओटीपी",
+    "identityVerified": "पहचान केवाईसी",
+    "agriculturalVerified": "कृषि रिकॉर्ड",
+    "govtSourceMatch": "सरकारी रजिस्ट्रि",
+    "fpoCooperative": "FPO सदस्य",
+    "businessRegVerified": "व्यवसाय पंजीकरण",
+    "identityBusinessMatch": "पहचान मिलान",
+    "completedTransactions": "पिछले सौदे",
+    "successfulTransactions": "ऑर्डर इतिहास",
+    "positiveTransactions": "अच्छी रेटिंग"
   },
 
   "sim": {
@@ -169,29 +467,47 @@
     "voiceTitle": "आईवीआर वॉइस सहायक",
     "voiceSubtitle": "बिना इंटरनेट या स्मार्टफोन वाले किसानों के लिए एआई वॉइस सहायक।",
     "voiceHelpline": "टोल-फ्री वॉइस हेल्पलाइन",
+
     "smsTitle": "एसएमएस कमांड टेस्टर",
-    "smsHint": "आज़माएँ: गेहूं 50 क्विंटल ग्रेड A नाशिक",
+    "smsHint": "आज़माएं: गेहूं 50 क्विंटल ग्रेड A नाशिक",
     "send": "भेजें",
+
     "call": "कॉल शुरू करें",
     "connecting": "कनेक्ट हो रहा है...",
     "speak": "बोलें / उत्तर लिखें",
     "microphone": "माइक्रोफोन से बोलें (स्पीच-टू-टेक्स्ट)",
     "audioAuto": "ऑडियो अपने आप चलाया जाता है",
-    "typeUtterance": "बोलने के लिए यहाँ लिखें (जैसे: गेहूं, 50 क्विंटल, ग्रेड A, नाशिक)",
+    "typeUtterance": "बोलने के लिए यहां लिखें (जैसे: गेहूं, 50 क्विंटल, ग्रेड A, नाशिक)",
+
     "buyerMessage": "आपकी लिस्टिंग लाइव है। सत्यापित खरीदार मिलने पर हम आपको सूचित करेंगे।",
     "languages": "हिंदी · मराठी · अंग्रेज़ी",
-    "startCallHint": "फार्मलिंक एआई के संवादात्मक वॉइस सहायक से जुड़ने के लिए 'कॉल शुरू करें' पर क्लिक करें।"
+    "startCallHint": "फार्मलिंक एआई के संवादात्मक वॉइस सहायक से जुड़ने के लिए 'कॉल शुरू करें' पर क्लिक करें।",
+
+    "loginRequired": "वॉइस सेवा का उपयोग करने के लिए किसान के रूप में लॉग इन करें।",
+    "quickDemoLogin": "क्विक डेमो लॉगिन →",
+    "existingLogin": "या मौजूदा खाते से लॉग इन करें",
+    "backToDashboard": "डैशबोर्ड पर वापस जाएं"
+  },
+
+  "sms": {
+    "title": "एसएमएस गेटवे सिम्युलेटर",
+    "loginMessage": "एसएमएस संदेशों का सिमुलेशन करने और फसल की कीमत की जानकारी पाने के लिए किसान के रूप में लॉग इन करें।",
+    "demoLogin": "क्विक डेमो लॉगिन →",
+    "connecting": "कनेक्ट हो रहा है...",
+    "existingLogin": "या मौजूदा खाते से लॉग इन करें",
+    "backDashboard": "डैशबोर्ड पर वापस जाएं"
   },
 
   "status": {
     "listed": "सूचीबद्ध",
-    "matched": "मैच हुआ",
+    "matched": "मिलान हुआ",
     "in_transit": "रास्ते में",
     "delivered": "डिलीवर",
     "payment_released": "भुगतान हुआ",
     "escrow_held": "एस्क्रो में",
     "released": "जारी",
-    "completed": "पूर्ण"
+    "completed": "पूर्ण",
+    "pending": "लंबित"
   },
 
   "footer": {
