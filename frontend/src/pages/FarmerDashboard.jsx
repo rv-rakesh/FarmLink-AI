@@ -45,8 +45,26 @@ export default function FarmerDashboard() {
   const formatNumber = (value) =>
     Number(value || 0).toLocaleString(locale);
 
+  const farmerText = (key, fallback) =>
+    t.farmer?.[key] || fallback;
+
   const cropLabel = (crop) =>
     t.crops?.[crop] || crop;
+
+  const wastageAlertText = (alert) => {
+    const crop = cropLabel(alert.crop);
+    const price = formatNumber(alert.suggested_price);
+
+    if (lang === "hi") {
+      return `${crop} की लिस्टिंग 24 घंटे से अधिक समय से बिना खरीदार के है। भाव को ₹${price}/क्विंटल तक कम करने या पास के खरीदार से संपर्क करने पर विचार करें।`;
+    }
+
+    if (lang === "mr") {
+      return `${crop} ची लिस्टिंग 24 तासांहून अधिक काळ खरेदीदाराशिवाय आहे. भाव ₹${price}/क्विंटलपर्यंत कमी करण्याचा किंवा जवळच्या खरेदीदाराशी संपर्क करण्याचा विचार करा.`;
+    }
+
+    return `${crop} listing has been unmatched for over 24 hours. Consider reducing ask to ₹${price}/q or contacting a nearby buyer.`;
+  };
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -85,7 +103,7 @@ export default function FarmerDashboard() {
         setError(
           e?.response?.data?.error ||
             e?.message ||
-            t.farmer.loadFailed
+            farmerText("loadFailed", "Unable to load the dashboard.")
         );
       } finally {
         setLoading(false);
@@ -95,7 +113,7 @@ export default function FarmerDashboard() {
     if (user) {
       loadDashboard();
     }
-  }, [user, t.farmer.loadFailed]);
+  }, [user, farmerText("loadFailed", "Unable to load the dashboard.")]);
 
   const isVerified =
     verif?.status === "VERIFIED" ||
@@ -115,7 +133,7 @@ export default function FarmerDashboard() {
     return (
       <div className="mx-auto max-w-6xl px-4 py-12 text-center">
         <p className="text-sm text-soil-900/60">
-          {t.farmer.loading}
+          {farmerText("loading", "Loading your dashboard...")}
         </p>
       </div>
     );
@@ -137,7 +155,7 @@ export default function FarmerDashboard() {
           <div className="flex items-center gap-2 mb-1">
 
             <span className="text-sm font-bold text-leaf-700">
-              {t.farmer.hello}, {user?.name}
+              {farmerText("hello", "Namaste")}, {user?.name}
             </span>
 
             <VerificationBadge
@@ -155,7 +173,7 @@ export default function FarmerDashboard() {
           </div>
 
           <h1 className="font-display text-3xl font-bold text-leaf-950">
-            {t.nav.dashboard}
+            {t.nav?.dashboard || "Dashboard"}
           </h1>
 
           <p className="text-sm text-soil-900/70">
@@ -163,7 +181,7 @@ export default function FarmerDashboard() {
               ? `${user.village}, `
               : ""}
             {user?.district ||
-              t.farmer.defaultDistrict}
+              farmerText("defaultDistrict", "Nashik")}
           </p>
 
         </div>
@@ -175,21 +193,21 @@ export default function FarmerDashboard() {
             to="/farmer/new"
           >
             <Plus size={18} />
-            {t.nav.newListing}
+            {t.nav?.newListing || "New listing"}
           </Link>
 
           <Link
             className="btn-ghost"
             to="/voice"
           >
-            {t.nav.voice}
+            {t.nav?.voice || "Voice (simulator)"}
           </Link>
 
           <Link
             className="btn-ghost"
             to="/sms"
           >
-            {t.nav.sms}
+            {t.nav?.sms || "SMS (simulator)"}
           </Link>
 
         </div>
@@ -211,16 +229,16 @@ export default function FarmerDashboard() {
               <div className="flex items-center gap-2 flex-wrap">
 
                 <h3 className="font-bold text-soil-950 text-base">
-                  {t.farmer.accountVerification}:{" "}
+                  {farmerText("accountVerification", "Account Verification")}:{" "}
                   {verif?.status ||
-                    t.farmer.pending}
+                    farmerText("pending", "Pending")}
                   {" "}
-                  ({t.farmer.level}{" "}
+                  ({farmerText("level", "Level")}{" "}
                   {formatNumber(currentLevel)}/4)
                 </h3>
 
                 <span className="text-xs bg-harvest-400/30 text-soil-950 font-bold px-2 py-0.5 rounded-md">
-                  {t.farmer.trust}:{" "}
+                  {farmerText("trust", "Trust")}:{" "}
                   {formatNumber(currentTrust)}/100
                 </span>
 
@@ -228,7 +246,7 @@ export default function FarmerDashboard() {
 
               <p className="text-xs text-soil-900/80 mt-1">
                 {verif?.next_step ||
-                  t.farmer.verificationNextStep}
+                  farmerText("verificationNextStep", "Complete verification to unlock all marketplace features.")}
               </p>
 
             </div>
@@ -243,7 +261,7 @@ export default function FarmerDashboard() {
               }
               className="btn-primary !py-2.5 !px-5 text-sm"
             >
-              {t.farmer.verifyAccount}
+              {farmerText("verifyAccount", "Verify Account")}
               <ArrowRight size={16} />
             </button>
 
@@ -251,7 +269,7 @@ export default function FarmerDashboard() {
               to="/verification/status"
               className="btn-ghost !py-2.5 !px-3 text-sm"
             >
-              {t.farmer.checklist}
+              {farmerText("checklist", "Checklist")}
             </Link>
 
           </div>
@@ -266,14 +284,14 @@ export default function FarmerDashboard() {
               size={18}
               className="text-leaf-700"
             />
-            {t.farmer.verifiedFarmerAccess}
+            {farmerText("verifiedFarmerAccess", "Verified farmer access is active.")}
           </div>
 
           <Link
             to="/verification/status"
             className="text-xs font-semibold text-leaf-900 underline"
           >
-            {t.farmer.viewTrustDetails} (
+            {farmerText("viewTrustDetails", "View Trust Details")} (
             {formatNumber(currentTrust)}/100)
           </Link>
 
@@ -292,11 +310,11 @@ export default function FarmerDashboard() {
           <div>
 
             <p className="text-xs font-bold uppercase tracking-wider text-harvest-400">
-              {t.farmer.offlineVoiceTitle}
+              {farmerText("offlineVoiceTitle", "Voice & SMS Service")}
             </p>
 
             <p className="text-sm font-semibold text-cream-100">
-              {t.farmer.callOrSms}:{" "}
+              {farmerText("callOrSms", "Call or SMS")}:{" "}
               <strong className="text-cream-50 font-mono">
                 +91 XXXXX XXXXX
               </strong>
@@ -311,14 +329,14 @@ export default function FarmerDashboard() {
             to="/voice"
             className="btn-gold !py-2 !px-3 text-xs"
           >
-            {t.farmer.voiceCallDemo}
+            {farmerText("voiceCallDemo", "Voice Demo")}
           </Link>
 
           <Link
             to="/sms"
             className="btn-ghost text-cream-50 !border-white/30 !bg-white/10 !py-2 !px-3 text-xs"
           >
-            {t.farmer.smsSimulator}
+            {farmerText("smsSimulator", "SMS Simulator")}
           </Link>
 
         </div>
@@ -331,7 +349,7 @@ export default function FarmerDashboard() {
 
           <h2 className="font-display text-xl flex items-center gap-2">
             <AlertTriangle className="text-harvest-500" />
-            {t.farmer.alerts}
+            {farmerText("alerts", "Wastage alerts")}
           </h2>
 
           <ul className="mt-3 space-y-2">
@@ -342,7 +360,7 @@ export default function FarmerDashboard() {
                 key={a.listing_id}
                 className="rounded-2xl bg-cream-100 p-3 text-sm"
               >
-                {a.message}
+                {wastageAlertText(a)}
               </li>
 
             ))}
@@ -360,14 +378,14 @@ export default function FarmerDashboard() {
           <div className="flex items-center justify-between mb-3">
 
             <h2 className="font-display text-xl">
-              {t.farmer.active}
+              {farmerText("active", "Active listings")}
             </h2>
 
             <Link
               to="/farmer/new"
               className="text-xs font-bold text-leaf-700 underline"
             >
-              + {t.farmer.addHarvest}
+              + {farmerText("addHarvest", "Add harvest")}
             </Link>
 
           </div>
@@ -375,7 +393,7 @@ export default function FarmerDashboard() {
           {listings.length === 0 ? (
 
             <div className="rounded-2xl bg-cream-50 p-6 text-center text-sm text-soil-900/60">
-              {t.farmer.empty}
+              {farmerText("empty", "No listings yet. Create one to see matches.")}
             </div>
 
           ) : (
@@ -396,8 +414,8 @@ export default function FarmerDashboard() {
                       <p className="font-bold text-leaf-950">
                         {cropLabel(l.crop)} ·{" "}
                         {formatNumber(l.quantity)}{" "}
-                        {t.farmer.quintals} ·{" "}
-                        {t.farmer.grade}{" "}
+                        {farmerText("quintals", "quintals")} ·{" "}
+                        {farmerText("grade", "Grade")}{" "}
                         {l.quality_grade}
                       </p>
 
@@ -418,7 +436,7 @@ export default function FarmerDashboard() {
 
                       {l.risk_flagged && (
                         <span className="text-[10px] bg-red-100 text-red-700 font-bold px-1.5 py-0.5 rounded">
-                          {t.farmer.reviewFlag}
+                          {farmerText("reviewFlag", "Review flag")}
                         </span>
                       )}
 
@@ -428,7 +446,7 @@ export default function FarmerDashboard() {
                   <div className="mt-2.5 pt-2 border-t border-leaf-900/5 flex items-center justify-between text-xs">
 
                     <span className="text-soil-900/60">
-                      {t.farmer.fairBand}: ₹
+                      {farmerText("fairBand", "Fair band")}: ₹
                       {formatNumber(
                         l.recommended_price_min
                       )}{" "}
@@ -442,7 +460,7 @@ export default function FarmerDashboard() {
                       className="font-bold text-leaf-900 underline"
                       to={`/farmer/matches/${l.id}`}
                     >
-                      {t.farmer.matches} →
+                      {farmerText("matches", "Matched buyers")} →
                     </Link>
 
                   </div>
@@ -460,15 +478,15 @@ export default function FarmerDashboard() {
         <div className="card">
 
           <h2 className="font-display text-xl mb-1">
-            {t.farmer.trends}
+            {farmerText("trends", "Cached price trends")}
           </h2>
 
           <p className="text-xs text-soil-900/60 mb-3">
-            {t.farmer.trendDescription}{" "}
+            {farmerText("trendDescription", "Cached market trend for")}{" "}
             {t.crops?.Wheat || "Wheat"}{" "}
-            {t.farmer.in}{" "}
+            {farmerText("in", "in")}{" "}
             {user?.district ||
-              t.farmer.defaultDistrict}
+              farmerText("defaultDistrict", "Nashik")}
           </p>
 
           <PriceChart
