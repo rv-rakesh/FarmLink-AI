@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   MessageSquare,
   Send,
@@ -71,6 +71,66 @@ export default function SmsSimulator() {
       ? "जलद चाचणीसाठी संदेश निवडा:"
       : "Click to test queries:";
 
+  const naturalLanguageLabel =
+    lang === "hi"
+      ? "नेचुरल लैंग्वेज एआई"
+      : lang === "mr"
+      ? "नैसर्गिक भाषा एआय"
+      : "Natural Language AI";
+
+  const serviceLabel =
+    lang === "en"
+      ? "SMS HELPLINE"
+      : "एसएमएस हेल्पलाइन";
+
+  const chatThinking =
+    lang === "hi"
+      ? "एआई जवाब तैयार कर रहा है..."
+      : lang === "mr"
+      ? "एआय उत्तर तयार करत आहे..."
+      : "AI is preparing a reply...";
+
+  const errorMessage =
+    lang === "hi"
+      ? "एसएमएस सेवा से उत्तर नहीं मिला। कृपया फिर प्रयास करें।"
+      : lang === "mr"
+      ? "एसएमएस सेवेकडून उत्तर मिळाले नाही. कृपया पुन्हा प्रयत्न करा."
+      : "The SMS service did not respond. Please try again.";
+
+  const naturalLanguageHint =
+    lang === "hi"
+      ? "प्राकृतिक भाषा में मंडी भाव पूछें या अपनी फसल की लिस्टिंग भेजें।"
+      : lang === "mr"
+      ? "नैसर्गिक भाषेत मंडी दर विचारा किंवा तुमच्या पिकाची लिस्टिंग पाठवा."
+      : "Use natural language to ask mandi rates or list your harvest.";
+
+  const [thread, setThread] = useState([
+    {
+      who: "sms",
+      text: welcomeMessage,
+    },
+  ]);
+
+  useEffect(() => {
+    setThread((previous) => {
+      // Update only the initial welcome message.
+      // Do not overwrite an active conversation.
+      if (
+        previous.length === 1 &&
+        previous[0].who === "sms"
+      ) {
+        return [
+          {
+            who: "sms",
+            text: welcomeMessage,
+          },
+        ];
+      }
+
+      return previous;
+    });
+  }, [welcomeMessage]);
+
   const send = async (msgToSend) => {
     if (busy) return;
 
@@ -119,24 +179,13 @@ export default function SmsSimulator() {
           text:
             e.response?.data?.error ||
             e.message ||
-            (lang === "hi"
-              ? "एसएमएस सेवा से उत्तर नहीं मिला। कृपया फिर प्रयास करें।"
-              : lang === "mr"
-              ? "एसएमएस सेवेकडून उत्तर मिळाले नाही. कृपया पुन्हा प्रयत्न करा."
-              : "The SMS service did not respond. Please try again."),
+            errorMessage,
         },
       ]);
     } finally {
       setBusy(false);
     }
   };
-
-  const [thread, setThread] = useState([
-    {
-      who: "sms",
-      text: welcomeMessage,
-    },
-  ]);
 
   return (
     <div className="card mx-auto max-w-xl space-y-4">
@@ -149,11 +198,7 @@ export default function SmsSimulator() {
 
           <div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-harvest-400">
-              {lang === "hi"
-                ? "एसएमएस हेल्पलाइन"
-                : lang === "mr"
-                ? "एसएमएस हेल्पलाइन"
-                : "SMS HELPLINE"}
+              {serviceLabel}
             </p>
 
             <p className="font-mono text-base font-bold text-cream-50">
@@ -163,11 +208,7 @@ export default function SmsSimulator() {
         </div>
 
         <span className="rounded-full bg-harvest-400/20 px-2.5 py-1 text-xs font-semibold text-cream-50">
-          {lang === "hi"
-            ? "नेचुरल लैंग्वेज एआई"
-            : lang === "mr"
-            ? "नैसर्गिक भाषा एआय"
-            : "Natural Language AI"}
+          {naturalLanguageLabel}
         </span>
       </div>
 
@@ -178,23 +219,19 @@ export default function SmsSimulator() {
             size={22}
             className="text-leaf-700"
           />
-          {t.sim.smsTitle}
+          {t.sim?.smsTitle || "SMS Command Tester"}
         </h2>
 
         <p className="mt-0.5 text-xs text-soil-900/70">
-          {lang === "hi"
-            ? "प्राकृतिक भाषा में मंडी भाव पूछें या अपनी फसल की लिस्टिंग भेजें।"
-            : lang === "mr"
-            ? "नैसर्गिक भाषेत मंडी दर विचारा किंवा तुमच्या पिकाची लिस्टिंग पाठवा."
-            : "Use natural language to ask mandi rates or list your harvest."}
+          {naturalLanguageHint}
         </p>
       </div>
 
-      {/* Chat */}
+      {/* Conversation */}
       <div className="h-72 space-y-3 overflow-y-auto rounded-2xl border border-leaf-900/10 bg-cream-50 p-4">
         {thread.map((message, index) => (
           <div
-            key={index}
+            key={`${message.who}-${index}`}
             className={
               message.who === "you"
                 ? "text-right"
@@ -216,17 +253,13 @@ export default function SmsSimulator() {
         {busy && (
           <div className="text-left">
             <span className="inline-block rounded-2xl border border-leaf-900/10 bg-white px-3.5 py-2.5 text-xs font-medium text-soil-900/60">
-              {lang === "hi"
-                ? "एआई जवाब तैयार कर रहा है..."
-                : lang === "mr"
-                ? "एआय उत्तर तयार करत आहे..."
-                : "AI is preparing a reply..."}
+              {chatThinking}
             </span>
           </div>
         )}
       </div>
 
-      {/* Suggestions */}
+      {/* Quick suggestions */}
       <div>
         <p className="mb-1.5 flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-soil-900/60">
           <Sparkles
@@ -242,11 +275,7 @@ export default function SmsSimulator() {
               key={prompt}
               type="button"
               disabled={busy}
-              onClick={() => {
-                if (busy) return;
-                setText(prompt);
-                send(prompt);
-              }}
+              onClick={() => send(prompt)}
               className="rounded-lg border border-leaf-900/10 bg-white px-2.5 py-1 text-[11px] text-soil-900 transition hover:bg-leaf-100 hover:text-leaf-900 disabled:cursor-not-allowed disabled:opacity-50"
             >
               "{prompt}"
@@ -272,6 +301,7 @@ export default function SmsSimulator() {
         />
 
         <button
+          type="button"
           className="btn-primary shrink-0"
           disabled={busy || !text.trim()}
           onClick={() => send()}
@@ -279,8 +309,8 @@ export default function SmsSimulator() {
           <Send size={16} />
 
           {busy
-            ? t.sim.connecting
-            : t.sim.send}
+            ? t.sim?.connecting || "Connecting..."
+            : t.sim?.send || "Send"}
         </button>
       </div>
     </div>
