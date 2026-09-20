@@ -80,12 +80,13 @@ export default function VoiceSimulator() {
           </p>
         </div>
         <button
-          type="button"
-          className="btn-ghost !py-1.5 !px-3 text-xs"
-          onClick={() => send("", true)}
-        >
-          {t.sim.call}
-        </button>
+  type="button"
+  className="btn-ghost !py-1.5 !px-3 text-xs"
+  disabled={busy}
+  onClick={() => send("", true)}
+>
+  {busy ? "Connecting..." : t.sim.call}
+</button>
       </div>
 
       <div className="h-72 overflow-y-auto rounded-2xl bg-leaf-950 p-4 text-cream-50 space-y-3">
