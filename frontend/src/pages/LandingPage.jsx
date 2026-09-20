@@ -249,7 +249,7 @@ export default function LandingPage() {
               <div className="flex flex-wrap items-center gap-3 pt-1">
                 <div className="rounded-2xl bg-white px-4 py-2.5 border-2 border-leaf-900/20 shadow-sm flex items-center gap-2">
                   <PhoneCall size={18} className="text-leaf-700" />
-                  <span className="font-mono font-bold text-lg text-leaf-950">+91 9000-346-276</span>
+                  <span className="font-mono font-bold text-lg text-leaf-950">+91 XXXXX XXXXX</span>
                 </div>
                 <button
                   onClick={() => nav("/voice")}
