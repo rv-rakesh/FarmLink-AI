@@ -62,7 +62,7 @@ export default function VoiceSimulator() {
           </span>
           <div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-harvest-400">Toll-Free Voice Helpline</p>
-            <p className="font-mono font-bold text-base text-cream-50">+91 00000 00000</p>
+            <p className="font-mono font-bold text-base text-cream-50">+91 XXXXX XXXXX</p>
           </div>
         </div>
         <span className="text-xs bg-harvest-400/20 text-cream-50 px-2.5 py-1 rounded-full font-semibold">
