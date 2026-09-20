@@ -34,4 +34,4 @@ export default function OfflineBanner() {
         "You are offline. Some features may be temporarily unavailable."}
     </div>
   );
-}V
+}
