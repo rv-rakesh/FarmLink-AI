@@ -4,22 +4,34 @@ import { useLang } from "../context/LanguageContext";
 
 export default function OfflineBanner() {
   const { t } = useLang();
-  const [online, setOnline] = useState(navigator.onLine);
+
+  const [online, setOnline] = useState(
+    typeof navigator !== "undefined"
+      ? navigator.onLine
+      : true
+  );
+
   useEffect(() => {
-    const on = () => setOnline(true);
-    const off = () => setOnline(false);
-    window.addEventListener("online", on);
-    window.addEventListener("offline", off);
+    const handleOnline = () => setOnline(true);
+    const handleOffline = () => setOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
     return () => {
-      window.removeEventListener("online", on);
-      window.removeEventListener("offline", off);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
   }, []);
+
   if (online) return null;
+
   return (
-    <div className="flex items-center justify-center gap-2 bg-harvest-500 text-soil-950 px-4 py-2 text-sm font-bold">
+    <div className="flex items-center justify-center gap-2 bg-harvest-500 px-4 py-2 text-sm font-bold text-soil-950">
       <WifiOff size={18} />
-      {t.offline}
+
+      {t.offline ||
+        "You are offline. Some features may be temporarily unavailable."}
     </div>
   );
-}
+}V
