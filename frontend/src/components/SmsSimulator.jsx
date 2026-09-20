@@ -1,101 +1,255 @@
-import { useState } from "react";
-import { MessageSquare, PhoneCall, Send, Sparkles } from "lucide-react";
+import { useMemo, useState } from "react";
+import {
+  MessageSquare,
+  Send,
+  Sparkles,
+} from "lucide-react";
 import { api } from "../services/api";
 import { useLang } from "../context/LanguageContext";
 
 export default function SmsSimulator() {
-  const { t } = useLang();
-  const [text, setText] = useState("Today tomato price in Nashik");
-  const [thread, setThread] = useState([
-    { who: "sms", text: "Welcome to FarmLink AI SMS Gateway! Text crop rates (e.g. 'Wheat rate Pune') or sell harvest ('Sell 50q wheat Nashik')." }
-  ]);
+  const { t, lang } = useLang();
+
+  const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
 
+  const welcomeMessage = useMemo(() => {
+    if (lang === "hi") {
+      return "फार्मलिंक एआई एसएमएस सेवा में आपका स्वागत है। मंडी भाव पूछें या अपनी फसल बेचने के लिए संदेश भेजें।";
+    }
+
+    if (lang === "mr") {
+      return "फार्मलिंक एआय एसएमएस सेवेत आपले स्वागत आहे. मंडी दर विचारा किंवा तुमचे पीक विकण्यासाठी संदेश पाठवा.";
+    }
+
+    return "Welcome to FarmLink AI SMS Gateway! Ask for crop rates or send a message to list your harvest.";
+  }, [lang]);
+
+  const samplePrompts = useMemo(() => {
+    if (lang === "hi") {
+      return [
+        "आज नाशिक में टमाटर का भाव",
+        "पुणे में 50 क्विंटल गेहूं ग्रेड A बेचना है",
+        "नाशिक में आलू का आज का भाव",
+        "करनाल में आज गेहूं का भाव",
+      ];
+    }
+
+    if (lang === "mr") {
+      return [
+        "आज नाशिकमध्ये टोमॅटोचा भाव",
+        "पुण्यात 50 क्विंटल गहू ग्रेड A विकायचा आहे",
+        "नाशिकमध्ये आज बटाट्याचा भाव",
+        "करनालमध्ये आज गव्हाचा भाव",
+      ];
+    }
+
+    return [
+      "Today tomato price in Nashik",
+      "Sell 50 quintals wheat in Pune grade A",
+      "Today potato price in Nashik",
+      "Wheat rate today in Karnal",
+    ];
+  }, [lang]);
+
+  const placeholder = useMemo(() => {
+    if (lang === "hi") {
+      return "जैसे: आज कपास का भाव या 30 क्विंटल आलू बेचना है";
+    }
+
+    if (lang === "mr") {
+      return "उदा.: आज कापसाचा भाव किंवा 30 क्विंटल बटाटा विकायचा आहे";
+    }
+
+    return "e.g. Cotton rate today or Sell 30q potato";
+  }, [lang]);
+
+  const quickTestLabel =
+    lang === "hi"
+      ? "जल्दी जांच के लिए संदेश चुनें:"
+      : lang === "mr"
+      ? "जलद चाचणीसाठी संदेश निवडा:"
+      : "Click to test queries:";
+
   const send = async (msgToSend) => {
-    const query = msgToSend || text;
+    if (busy) return;
+
+    const query = (msgToSend ?? text).trim();
+
     if (!query) return;
+
     setBusy(true);
-    setThread((th) => [...th, { who: "you", text: query }]);
+
+    setThread((previous) => [
+      ...previous,
+      {
+        who: "you",
+        text: query,
+      },
+    ]);
+
     setText("");
+
     try {
-      const { data } = await api.post("/api/sms/webhook", { text: query });
-      const reply = data.reply_text || data.sms?.body || JSON.stringify(data);
-      setThread((th) => [...th, { who: "sms", text: reply }]);
+      const { data } = await api.post(
+        "/api/sms/webhook",
+        {
+          text: query,
+          lang,
+        }
+      );
+
+      const reply =
+        data.reply_text ||
+        data.sms?.body ||
+        JSON.stringify(data);
+
+      setThread((previous) => [
+        ...previous,
+        {
+          who: "sms",
+          text: reply,
+        },
+      ]);
     } catch (e) {
-      setThread((th) => [...th, { who: "sms", text: e.response?.data?.error || e.message }]);
+      setThread((previous) => [
+        ...previous,
+        {
+          who: "sms",
+          text:
+            e.response?.data?.error ||
+            e.message ||
+            (lang === "hi"
+              ? "एसएमएस सेवा से उत्तर नहीं मिला। कृपया फिर प्रयास करें।"
+              : lang === "mr"
+              ? "एसएमएस सेवेकडून उत्तर मिळाले नाही. कृपया पुन्हा प्रयत्न करा."
+              : "The SMS service did not respond. Please try again."),
+        },
+      ]);
     } finally {
       setBusy(false);
     }
   };
 
-  const samplePrompts = [
-    "Today tomato price in Nashik",
-    "Sell 50 quintals wheat in Pune grade A",
-    "LIST POTATO 40 B PUNE",
-    "Wheat rate today in Karnal",
-  ];
+  const [thread, setThread] = useState([
+    {
+      who: "sms",
+      text: welcomeMessage,
+    },
+  ]);
 
   return (
-    <div className="card max-w-xl mx-auto space-y-4">
-      {/* Service Number Banner */}
-      <div className="flex items-center justify-between rounded-2xl bg-leaf-900 text-cream-50 p-4 border border-leaf-700/40">
+    <div className="card mx-auto max-w-xl space-y-4">
+      {/* Service banner */}
+      <div className="flex items-center justify-between rounded-2xl border border-leaf-700/40 bg-leaf-900 p-4 text-cream-50">
         <div className="flex items-center gap-2.5">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/10 text-harvest-400">
             <MessageSquare size={18} />
           </span>
+
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-harvest-400">SMS Gateway Number</p>
-            <p className="font-mono font-bold text-base text-cream-50">+91 9000-346-276</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-harvest-400">
+              {lang === "hi"
+                ? "एसएमएस हेल्पलाइन"
+                : lang === "mr"
+                ? "एसएमएस हेल्पलाइन"
+                : "SMS HELPLINE"}
+            </p>
+
+            <p className="font-mono text-base font-bold text-cream-50">
+              +91 XXXXX XXXXX
+            </p>
           </div>
         </div>
-        <span className="text-xs bg-harvest-400/20 text-cream-50 px-2.5 py-1 rounded-full font-semibold">
-          Natural Language AI
+
+        <span className="rounded-full bg-harvest-400/20 px-2.5 py-1 text-xs font-semibold text-cream-50">
+          {lang === "hi"
+            ? "नेचुरल लैंग्वेज एआई"
+            : lang === "mr"
+            ? "नैसर्गिक भाषा एआय"
+            : "Natural Language AI"}
         </span>
       </div>
 
+      {/* Title */}
       <div>
-        <h2 className="font-display text-2xl font-bold text-leaf-950 flex items-center gap-2">
-          <MessageSquare size={22} className="text-leaf-700" /> {t.sim.smsTitle}
+        <h2 className="flex items-center gap-2 font-display text-2xl font-bold text-leaf-950">
+          <MessageSquare
+            size={22}
+            className="text-leaf-700"
+          />
+          {t.sim.smsTitle}
         </h2>
-        <p className="text-xs text-soil-900/70 mt-0.5">
-          Natural language SMS assistant. Inquire mandi rates or list produce without rigid templates.
+
+        <p className="mt-0.5 text-xs text-soil-900/70">
+          {lang === "hi"
+            ? "प्राकृतिक भाषा में मंडी भाव पूछें या अपनी फसल की लिस्टिंग भेजें।"
+            : lang === "mr"
+            ? "नैसर्गिक भाषेत मंडी दर विचारा किंवा तुमच्या पिकाची लिस्टिंग पाठवा."
+            : "Use natural language to ask mandi rates or list your harvest."}
         </p>
       </div>
 
-      {/* Chat conversation */}
-      <div className="h-72 overflow-y-auto rounded-2xl bg-cream-50 p-4 space-y-3 border border-leaf-900/10">
-        {thread.map((m, i) => (
-          <div key={i} className={m.who === "you" ? "text-right" : "text-left"}>
+      {/* Chat */}
+      <div className="h-72 space-y-3 overflow-y-auto rounded-2xl border border-leaf-900/10 bg-cream-50 p-4">
+        {thread.map((message, index) => (
+          <div
+            key={index}
+            className={
+              message.who === "you"
+                ? "text-right"
+                : "text-left"
+            }
+          >
             <span
               className={`inline-block max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs font-medium leading-relaxed ${
-                m.who === "you"
+                message.who === "you"
                   ? "bg-leaf-900 text-white shadow-sm"
-                  : "bg-white text-soil-950 border border-leaf-900/10 shadow-sm"
+                  : "border border-leaf-900/10 bg-white text-soil-950 shadow-sm"
               }`}
             >
-              {m.text}
+              {message.text}
             </span>
           </div>
         ))}
+
+        {busy && (
+          <div className="text-left">
+            <span className="inline-block rounded-2xl border border-leaf-900/10 bg-white px-3.5 py-2.5 text-xs font-medium text-soil-900/60">
+              {lang === "hi"
+                ? "एआई जवाब तैयार कर रहा है..."
+                : lang === "mr"
+                ? "एआय उत्तर तयार करत आहे..."
+                : "AI is preparing a reply..."}
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* Quick suggestions */}
+      {/* Suggestions */}
       <div>
-        <p className="text-[11px] font-bold text-soil-900/60 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-          <Sparkles size={12} className="text-harvest-500" /> Click to test queries:
+        <p className="mb-1.5 flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-soil-900/60">
+          <Sparkles
+            size={12}
+            className="text-harvest-500"
+          />
+          {quickTestLabel}
         </p>
+
         <div className="flex flex-wrap gap-1.5">
-          {samplePrompts.map((p) => (
+          {samplePrompts.map((prompt) => (
             <button
-              key={p}
+              key={prompt}
               type="button"
+              disabled={busy}
               onClick={() => {
-                setText(p);
-                send(p);
+                if (busy) return;
+                setText(prompt);
+                send(prompt);
               }}
-              className="rounded-lg bg-white px-2.5 py-1 text-[11px] text-soil-900 border border-leaf-900/10 hover:bg-leaf-100 hover:text-leaf-900 transition"
+              className="rounded-lg border border-leaf-900/10 bg-white px-2.5 py-1 text-[11px] text-soil-900 transition hover:bg-leaf-100 hover:text-leaf-900 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              "{p}"
+              "{prompt}"
             </button>
           ))}
         </div>
@@ -107,11 +261,26 @@ export default function SmsSimulator() {
           className="field text-sm"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="e.g. Rate for cotton today or Sell 30q potato"
-          onKeyDown={(e) => e.key === "Enter" && send()}
+          placeholder={placeholder}
+          disabled={busy}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              send();
+            }
+          }}
         />
-        <button className="btn-primary shrink-0" disabled={busy || !text} onClick={() => send()}>
-          <Send size={16} /> {t.sim.send}
+
+        <button
+          className="btn-primary shrink-0"
+          disabled={busy || !text.trim()}
+          onClick={() => send()}
+        >
+          <Send size={16} />
+
+          {busy
+            ? t.sim.connecting
+            : t.sim.send}
         </button>
       </div>
     </div>
