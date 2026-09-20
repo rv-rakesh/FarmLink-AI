@@ -10,12 +10,41 @@ export default function VoiceSimulator() {
   const [busy, setBusy] = useState(false);
 
   const speak = (msg) => {
-    if (!window.speechSynthesis) return;
+  if (!window.speechSynthesis) return;
+
+  const targetLang =
+    lang === "hi" ? "hi-IN" :
+    lang === "mr" ? "mr-IN" :
+    "en-IN";
+
+  const speakNow = () => {
+    const voices = window.speechSynthesis.getVoices();
+
+    const voice =
+      voices.find((v) => v.lang === targetLang) ||
+      voices.find((v) => v.lang.toLowerCase().startsWith(targetLang.slice(0, 2))) ||
+      voices.find((v) => v.lang.startsWith("en-IN")) ||
+      voices[0];
+
     const u = new SpeechSynthesisUtterance(msg);
-    u.lang = lang === "hi" ? "hi-IN" : lang === "mr" ? "mr-IN" : "en-IN";
+    u.lang = targetLang;
+
+    if (voice) {
+      u.voice = voice;
+    }
+
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(u);
   };
+
+  const voices = window.speechSynthesis.getVoices();
+
+  if (voices.length) {
+    speakNow();
+  } else {
+    window.speechSynthesis.onvoiceschanged = speakNow;
+  }
+};
 
   const send = async (utterance, reset = false) => {
     setBusy(true);
