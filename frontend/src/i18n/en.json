@@ -12,8 +12,12 @@
     "newListing": "New listing",
     "voice": "Voice (simulator)",
     "sms": "SMS (simulator)",
-    "verify": "Verify GSTIN",
-    "orders": "Orders"
+    "verify": "Verify",
+    "orders": "Orders",
+    "online": "Online",
+    "offline": "Offline",
+    "language": "Language",
+    "admin": "Admin"
   },
 
   "roles": {
@@ -39,8 +43,8 @@
     "startFarmer": "Join as Farmer",
     "startBuyer": "Join as Buyer",
     "demoLogin": "Demo Login:",
-    "farmerDemo": "Farmer (9876540001)",
-    "buyerDemo": "Buyer (9000000001)",
+    "farmerDemo": "Farmer Demo",
+    "buyerDemo": "Buyer Demo",
     "adminAccess": "Admin Access →",
 
     "howTitle": "How it works",
@@ -63,7 +67,6 @@
     "farmerNetEarnings": "Farmer Net Earnings:",
     "farmerProfit": "Farmer Profit:",
     "vsMiddleman": "vs Middleman Cut",
-
     "calcHint": "Mandi traders may retain 30–40%. FarmLink keeps more value with the farmer.",
     "crop": "Crop",
     "qty": "Quantity (quintals)",
@@ -75,7 +78,7 @@
 
     "voiceSmsService": "Dedicated Voice & SMS Service",
     "noSmartphoneTitle": "No Smartphone? Call or SMS Our AI Service",
-    "noSmartphoneBody": "Farmers without internet can dial or text our dedicated toll-free helpline. Speak naturally or send simple messages in Hindi, Marathi, or English to list crops and receive instant market rates.",
+    "noSmartphoneBody": "Farmers without internet can dial or text our dedicated helpline. Speak naturally or send simple messages in Hindi, Marathi, or English to list crops and receive market rates.",
     "tryVoiceDemo": "Try Voice IVR Demo",
     "trySmsDemo": "Try SMS Simulator",
     "exampleSmsCommands": "Example SMS Commands:",
@@ -114,19 +117,36 @@
     "submitSignup": "Create account",
     "demoFarmer": "Demo farmer",
     "demoBuyer": "Demo buyer",
-    "demoAdmin": "Demo admin"
+    "demoAdmin": "Demo admin",
+    "creating": "Creating account...",
+    "loggingIn": "Logging in...",
+    "loginFailed": "Login failed. Please check your details.",
+    "signupFailed": "Account creation failed. Please try again."
   },
 
   "listing": {
     "title": "Create a crop listing",
     "subtitle": "AI will show a fair price before you publish.",
     "quality": "Quality grade",
+    "grade": "Grade",
     "harvest": "Harvest date",
     "ask": "Your asking price (₹ / quintal)",
     "preview": "Get AI price",
     "publish": "Publish listing",
+    "publishing": "Publishing...",
+    "loading": "Loading...",
     "band": "Recommended band",
-    "basis": "Why this price"
+    "basis": "Why this price",
+    "price": "Price",
+    "min": "Min",
+    "max": "Max",
+    "target": "Target",
+    "previewHint": "Tap the AI price button to see the recommended price before publishing.",
+    "noChartData": "No chart data yet. Preview a price to load mandi history.",
+    "genericError": "Something went wrong. Please try again.",
+    "stepList": "List",
+    "stepPrice": "Price",
+    "stepMatch": "Match"
   },
 
   "farmer": {
@@ -135,58 +155,353 @@
     "alerts": "Wastage alerts",
     "matches": "Matched buyers",
     "trends": "Cached price trends",
-    "empty": "No listings yet. Create one to see matches."
+    "empty": "No listings yet. Create one to see matches.",
+    "dashboard": "Farmer Dashboard",
+    "newListing": "New Crop Listing",
+    "voice": "Voice Assistant",
+    "sms": "SMS Service",
+    "verification": "Verification",
+    "verificationStatus": "Verification Status",
+    "viewMatches": "View Matches",
+    "trackOrder": "Track Order",
+    "loading": "Loading your dashboard...",
+    "loadingListings": "Loading listings...",
+    "noAlerts": "No active wastage alerts.",
+    "noMatches": "No buyer matches yet.",
+    "listed": "Listed",
+    "crop": "Crop",
+    "quantity": "Quantity",
+    "quality": "Quality",
+    "district": "District",
+    "askingPrice": "Asking Price",
+    "status": "Status",
+    "created": "Created",
+    "view": "View",
+    "verifiedBuyer": "Verified Buyer",
+    "buyersMatched": "Buyers Matched",
+    "remainingQuantity": "Remaining Quantity",
+    "wastageRisk": "Wastage Risk",
+    "action": "Action"
   },
 
   "buyer": {
-    "verifyFirst": "Verify your GSTIN to receive matches.",
+    "verifyFirst": "Verify your business details to receive matches.",
     "feed": "Listings that fit your demand",
-    "verified": "Verified buyer"
+    "verified": "Verified buyer",
+    "dashboard": "Buyer Dashboard",
+    "verification": "Buyer Verification",
+    "verificationStatus": "Verification Status",
+    "loading": "Loading buyer dashboard...",
+    "loadingListings": "Loading matching listings...",
+    "noListings": "No listings currently match your demand.",
+    "crop": "Crop",
+    "quantity": "Quantity",
+    "district": "District",
+    "askingPrice": "Asking Price",
+    "distance": "Distance",
+    "farmer": "Farmer",
+    "viewDetails": "View Details",
+    "contactFarmer": "Contact Farmer",
+    "contacting": "Connecting...",
+    "contactSuccess": "Farmer contact details are available for this verified match.",
+    "contactFailed": "Unable to connect with the farmer.",
+    "verificationFailed": "Verification submission failed.",
+    "gstinSandboxHint": "Use a valid-looking GSTIN for this sandbox demonstration.",
+    "bankAccountReference": "Bank account reference",
+    "verifying": "Verifying...",
+    "verifyNow": "Verify Now",
+    "quantityLabel": "Purchase Quantity"
+  },
+
+  "matches": {
+    "title": "Matched Buyers",
+    "loading": "Loading matched buyers...",
+    "loadFailed": "Unable to load matched buyers.",
+    "backDashboard": "Back to Dashboard",
+    "quintals": "Quintals",
+    "askingPrice": "Asking Price",
+    "splitLot": "Split lot allocated across multiple verified buyers",
+    "kmAway": "km away",
+    "gstin": "GSTIN",
+    "allocatedQuantity": "Allocated Quantity",
+    "noMatches": "No verified buyers are matched yet.",
+    "noMatchesHint": "Your listing remains active for buyer matching.",
+    "remainingLot": "Remaining lot",
+    "awaitingMatching": "awaiting additional buyer matching.",
+    "estimatedGross": "Estimated Gross Trade Value",
+    "directPayment": "Direct Payment to Farmer Bank",
+    "confirm": "Confirm Match & Proceed to Deal →",
+    "connecting": "Connecting...",
+    "confirmFailed": "Unable to confirm this match."
   },
 
   "order": {
     "track": "Order tracking",
+    "order": "Order",
     "escrow": "Escrow",
     "release": "Release payment to farmer",
-    "advance": "Mark next status"
+    "advance": "Mark next status",
+    "loading": "Loading deal details...",
+    "notFound": "Order details could not be loaded.",
+    "loadFailed": "Unable to load deal details.",
+    "updateFailed": "Unable to update the order.",
+    "backDashboard": "Back to Dashboard",
+    "farmerDetails": "Farmer Details",
+    "buyerDetails": "Wholesale Buyer",
+    "farmer": "Farmer",
+    "verifiedBuyer": "Verified Wholesale Buyer",
+    "districtFallback": "Maharashtra",
+    "dealProgress": "Deal Progress",
+    "pickupScheduled": "Pickup Scheduled",
+    "pending": "Pending",
+    "escrowSecured": "Escrow Secured",
+    "updating": "Updating...",
+    "releasePayment": "Release Payment to Farmer Bank Account ✓",
+    "farmerPaymentMessage": "Harvest successfully received. Buyer is releasing payment to your registered bank account.",
+
+    "statusListed": "Listed",
+    "statusMatched": "Matched",
+    "statusInTransit": "In Transit",
+    "statusDelivered": "Delivered",
+    "statusPaymentReleased": "Payment Released",
+    "statusEscrowHeld": "Escrow Held",
+    "statusReleased": "Released",
+    "statusCompleted": "Completed",
+    "statusPending": "Pending",
+    "statusUnknown": "Unknown"
   },
 
   "admin": {
     "title": "Platform overview",
-    "pending": "Buyer verification queue",
+    "pending": "Pending",
     "flags": "Escrow / transaction flags",
-    "approve": "Approve"
+    "approve": "Approve",
+
+    "backOverview": "Back to Admin Overview",
+    "verificationTitle": "Verification Management & Audit",
+    "verificationSubtitle": "Review identity submissions, inspect evidence, evaluate trust information, and manage verification records.",
+    "refreshList": "Refresh List",
+    "refreshing": "Refreshing...",
+
+    "underReview": "Under Review",
+    "pendingDetails": "Pending Details",
+    "fullyVerified": "Fully Verified",
+    "rejected": "Rejected",
+    "suspended": "Suspended",
+    "riskFlagged": "Risk Flagged",
+
+    "allRecords": "All Records",
+    "underReviewTab": "Under Review ⟳",
+    "verifiedTab": "Verified ✓",
+    "pendingTab": "Pending",
+    "rejectedTab": "Rejected",
+    "suspendedTab": "Suspended",
+    "riskFlagsTab": "Risk Flags ⚠",
+
+    "allRoles": "All Roles",
+    "farmersOnly": "Farmers Only",
+    "buyersOnly": "Buyers Only",
+    "farmer": "Farmer",
+    "buyer": "Buyer",
+
+    "flaggedTitle": "Flagged Listings & Anomalies",
+    "noRiskFlags": "No risk flags are currently detected.",
+    "flaggedListing": "Flagged Listing",
+    "quintals": "Quintals",
+
+    "loadingRecords": "Loading verification records...",
+    "noRecords": "No records found for this filter.",
+    "phone": "Phone",
+    "district": "District",
+    "trust": "Trust",
+    "submitted": "Submitted",
+    "viewDetails": "View Details →",
+
+    "reviewTitle": "Verification Review",
+    "loadingDetails": "Loading details...",
+    "currentStatus": "Current Status",
+    "credentials": "Submitted Credentials",
+
+    "mobileOtp": "Mobile OTP",
+    "otpVerified": "Verified ✓",
+    "otpNotVerified": "Not Verified",
+
+    "identityKyc": "Identity KYC",
+    "kycVerified": "Verified",
+    "kycPending": "Pending KYC",
+
+    "agriculturalEvidence": "Agricultural Evidence",
+    "businessRegistration": "Business Registration",
+    "type": "Type",
+    "reference": "Reference",
+    "status": "Status",
+    "locationRecord": "Location Record",
+
+    "adminNotes": "Admin Notes",
+    "notesPlaceholder": "Add notes about document validity or verification checks.",
+
+    "approveSuccess": "Verification approved successfully.",
+    "approveFailed": "Failed to approve verification.",
+    "rejectSuccess": "Verification rejected.",
+    "rejectFailed": "Failed to reject verification.",
+    "suspendSuccess": "Account suspended.",
+    "suspendFailed": "Failed to suspend the account.",
+    "infoSuccess": "Additional information requested.",
+    "infoFailed": "Failed to request additional information.",
+
+    "suspendConfirm": "Are you sure you want to suspend this account?",
+    "administrativeSuspension": "Administrative suspension",
+    "defaultInfoRequest": "Please provide clearer verification evidence.",
+    "processing": "Processing...",
+
+    "reject": "Reject Application",
+    "requestInfo": "Request Info",
+    "suspend": "Suspend Account",
+    "cancel": "Cancel",
+
+    "rejectReasonTitle": "Specify Rejection Reason",
+    "rejectReasonBody": "This message will be shown to the user so they can correct their verification details.",
+    "rejectPlaceholder": "Enter the reason for rejection...",
+    "confirmRejection": "Confirm Rejection"
+  },
+
+  "verification": {
+    "registered": "Registered",
+    "suspended": "Suspended",
+    "actionRequired": "Action Required",
+
+    "verifiedBuyer": "✓ Verified Buyer",
+    "verifiedFarmer": "✓ Verified Farmer",
+
+    "underReview": "Under Review",
+    "identityVerified": "ID Verified",
+    "mobileVerified": "Mobile Verified",
+
+    "pending": "Pending",
+    "submitted": "Submitted",
+    "verified": "Verified",
+    "rejected": "Rejected",
+    "unknown": "Unknown",
+
+    "mobileOtp": "Mobile OTP Verified",
+    "identityKyc": "Identity KYC Confirmed",
+    "businessEvidence": "Business Evidence (GSTIN/Udyam)",
+    "agriculturalEvidence": "Agricultural Evidence (Land/FPO)",
+    "adminReview": "FarmLink Admin Review Completed",
+
+    "viewDetails": "View verification details",
+    "farmLinkTitle": "FarmLink Verification",
+    "trustCredentials": "Trust Credentials",
+    "accountStatus": "Account Status",
+    "trustScore": "Trust Score",
+    "checksTitle": "Verification Checks",
+    "verifiedByFarmLink": "Verified by FarmLink AI on",
+    "close": "Close",
+
+    "statusTitle": "Verification & Trust Status",
+    "statusLoadFailed": "Unable to load verification status.",
+    "loadingStatus": "Loading verification status...",
+    "backDashboard": "Back to Dashboard",
+    "accountType": "Account Type",
+    "registeredAs": "Registered as",
+    "refreshStatus": "Refresh Status",
+    "refreshing": "Refreshing...",
+
+    "fullyVerified": "Account Fully Verified ✓",
+    "fullyVerifiedBody": "Your account has completed the required verification steps and has access to verified trading features.",
+    "verifiedOn": "Verified by FarmLink AI on",
+
+    "underReviewBody": "Your submitted verification details are currently being reviewed.",
+
+    "rejectedBody": "The submitted verification details could not be validated.",
+    "resubmit": "Resubmit Verification Details →",
+
+    "completeTitle": "Complete Verification to Unlock Full Access",
+    "completeBody": "Complete the required verification steps to earn the verified badge.",
+    "continueWizard": "Continue Verification Wizard →",
+    "checklistTitle": "Verification Steps Checklist",
+    "goToWizard": "Go to Verification Wizard",
+
+    "step": "Step",
+    "completed": "Completed ✓",
+
+    "mobileStepTitle": "Mobile Number Verification",
+    "mobileStepSubtitle": "6-digit OTP confirmation to establish direct SMS and voice reachability",
+
+    "identityStepTitle": "Identity KYC Verification",
+    "identityStepSubtitle": "Validation of government identity reference",
+
+    "businessEvidenceTitle": "Business Evidence",
+    "businessEvidenceSubtitle": "GSTIN, Udyam MSME, or Trade Licence registration",
+
+    "agriculturalEvidenceTitle": "Agricultural Evidence",
+    "agriculturalEvidenceSubtitle": "Farmer Registration, Land Record, or FPO membership",
+
+    "finalReviewTitle": "FarmLink Final Review & Trust Status",
+    "finalReviewSubtitle": "Automated risk screening and admin approval for the verified marketplace badge"
+  },
+
+  "trust": {
+    "title": "Trust Score",
+    "phoneVerified": "Mobile OTP",
+    "identityVerified": "Identity KYC",
+    "agriculturalVerified": "Agri Record",
+    "govtSourceMatch": "Govt Registry",
+    "fpoCooperative": "FPO Member",
+    "businessRegVerified": "Business Registration",
+    "identityBusinessMatch": "Identity Match",
+    "completedTransactions": "Past Deals",
+    "successfulTransactions": "Order History",
+    "positiveTransactions": "High Ratings"
   },
 
   "sim": {
     "voiceBadge": "Web Simulator (Production: Bhashini/Twilio).",
     "smsBadge": "Web Simulator (Production: MSG91).",
-    "voiceTitle": "IVR voice assistant",
+    "voiceTitle": "IVR Voice Assistant",
     "voiceSubtitle": "AI voice assistant for farmers without internet or smartphones.",
     "voiceHelpline": "TOLL-FREE VOICE HELPLINE",
-    "smsTitle": "SMS command tester",
+
+    "smsTitle": "SMS Command Tester",
     "smsHint": "Try: LIST WHEAT 50 A NASHIK",
     "send": "Send",
-    "call": "Start call",
+
+    "call": "Start Call",
     "connecting": "Connecting...",
     "speak": "Speak / type reply",
     "microphone": "Speak via Microphone (Speech-to-Text)",
     "audioAuto": "Audio synthesis plays automatically",
     "typeUtterance": "Type speech utterance (e.g. Wheat, 50 quintals, Grade A, Nashik)",
+
     "buyerMessage": "Your listing is live. We’ll notify you when a verified buyer matches.",
     "languages": "Hindi · Marathi · English",
-    "startCallHint": "Click 'Start Call' to connect with the FarmLink AI conversational voice assistant."
+    "startCallHint": "Click 'Start Call' to connect with the FarmLink AI conversational voice assistant.",
+
+    "loginRequired": "Please log in as a farmer to use the voice service.",
+    "quickDemoLogin": "Quick Demo Login →",
+    "existingLogin": "Or log in with an existing account",
+    "backToDashboard": "Back to Dashboard"
+  },
+
+  "sms": {
+    "title": "SMS Gateway Simulator",
+    "loginMessage": "Log in as a farmer to simulate SMS messages and receive crop price information.",
+    "demoLogin": "Quick Demo Login →",
+    "connecting": "Connecting...",
+    "existingLogin": "Or log in with an existing account",
+    "backDashboard": "Back to Dashboard"
   },
 
   "status": {
     "listed": "Listed",
     "matched": "Matched",
-    "in_transit": "In transit",
+    "in_transit": "In Transit",
     "delivered": "Delivered",
     "payment_released": "Paid",
-    "escrow_held": "In escrow",
+    "escrow_held": "In Escrow",
     "released": "Released",
-    "completed": "Completed"
+    "completed": "Completed",
+    "pending": "Pending"
   },
 
   "footer": {
