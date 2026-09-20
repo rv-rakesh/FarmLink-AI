@@ -46,10 +46,7 @@ function Guard({ roles, children }) {
     return <Navigate to="/login" replace />;
   }
 
-  if (
-    roles &&
-    !roles.includes(user.role)
-  ) {
+  if (roles && !roles.includes(user.role)) {
     return <Navigate to="/" replace />;
   }
 
@@ -83,19 +80,19 @@ function Shell() {
 
           {/* Farmer */}
           <Route
-            path="/farmer"
+            path="/farmer/new"
             element={
               <Guard roles={["farmer"]}>
-                <FarmerDashboard />
+                <NewListingPage />
               </Guard>
             }
           />
 
           <Route
-            path="/farmer/new"
+            path="/farmer"
             element={
               <Guard roles={["farmer"]}>
-                <NewListingPage />
+                <FarmerDashboard />
               </Guard>
             }
           />
@@ -137,7 +134,7 @@ function Shell() {
             }
           />
 
-          {/* Shared */}
+          {/* Verification */}
           <Route
             path="/verification/status"
             element={
@@ -147,6 +144,7 @@ function Shell() {
             }
           />
 
+          {/* Orders */}
           <Route
             path="/orders/:orderId"
             element={
@@ -175,18 +173,19 @@ function Shell() {
             }
           />
 
-          {/* Voice / SMS */}
+          {/* Voice */}
           <Route
             path="/voice"
             element={<VoiceCallPage />}
           />
 
+          {/* SMS */}
           <Route
             path="/sms"
             element={<SmsTestPage />}
           />
 
-          {/* SPA fallback */}
+          {/* Unknown route */}
           <Route
             path="*"
             element={<Navigate to="/" replace />}
