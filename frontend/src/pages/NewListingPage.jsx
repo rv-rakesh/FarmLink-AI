@@ -5,7 +5,13 @@ import { useLang } from "../context/LanguageContext";
 import { api, recommendPrice } from "../services/api";
 import PriceChart from "../components/PriceChart";
 
-const CROPS = ["Wheat", "Rice", "Potato", "Tomato", "Cotton"];
+const CROPS = [
+  "Wheat",
+  "Rice",
+  "Potato",
+  "Tomato",
+  "Cotton",
+];
 
 const DISTRICTS = [
   "Nashik",
@@ -30,7 +36,9 @@ export default function NewListingPage() {
   const [crop, setCrop] = useState("Wheat");
   const [quantity, setQuantity] = useState(50);
   const [quality, setQuality] = useState("A");
-  const [district, setDistrict] = useState(user?.district || "Nashik");
+  const [district, setDistrict] = useState(
+    user?.district || "Nashik"
+  );
   const [harvest, setHarvest] = useState("");
   const [price, setPrice] = useState(null);
   const [ask, setAsk] = useState(0);
@@ -40,24 +48,25 @@ export default function NewListingPage() {
 
   const locale =
     lang === "hi"
-      ? "hi-IN-u-nu-deva"
+      ? "hi-IN"
       : lang === "mr"
-      ? "mr-IN-u-nu-deva"
+      ? "mr-IN"
       : "en-IN";
 
   const formatNumber = (value) =>
     Number(value || 0).toLocaleString(locale);
 
-  const cropLabel = (value) => t.crops?.[value] || value;
-
-  const gradeLabel = (value) =>
-    t.listing?.grade ? `${t.listing.grade} ${value}` : `Grade ${value}`;
+  const cropLabel = (value) =>
+    t.crops?.[value] || value;
 
   const clampedAsk = useMemo(() => {
     if (!price) return ask;
 
     return Math.min(
-      Math.max(ask, price.recommended_price_min),
+      Math.max(
+        Number(ask) || 0,
+        price.recommended_price_min
+      ),
       price.recommended_price_max
     );
   }, [ask, price]);
@@ -100,14 +109,17 @@ export default function NewListingPage() {
     setErr("");
 
     try {
-      const { data } = await api.post("/api/listings", {
-        crop,
-        quantity,
-        quality,
-        district,
-        harvest_date: harvest,
-        farmer_asking_price: clampedAsk,
-      });
+      const { data } = await api.post(
+        "/api/listings",
+        {
+          crop,
+          quantity,
+          quality,
+          district,
+          harvest_date: harvest,
+          farmer_asking_price: clampedAsk,
+        }
+      );
 
       nav(`/farmer/matches/${data.id}`);
     } catch (e) {
@@ -125,7 +137,6 @@ export default function NewListingPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
-      {/* Progress */}
       <ol className="mb-6 flex flex-wrap gap-2 text-sm font-bold">
         <li className="rounded-full bg-leaf-900 px-3 py-1 text-white">
           1 {t.listing?.stepList || "List"}
@@ -141,7 +152,6 @@ export default function NewListingPage() {
       </ol>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Listing form */}
         <div className="card">
           <h1 className="font-display text-3xl">
             {t.listing.title}
@@ -151,7 +161,6 @@ export default function NewListingPage() {
             {t.listing.subtitle}
           </p>
 
-          {/* Crop */}
           <label className="label">
             {t.landing.crop}
           </label>
@@ -159,17 +168,21 @@ export default function NewListingPage() {
           <select
             className="field"
             value={crop}
-            onChange={(e) => setCrop(e.target.value)}
+            onChange={(e) =>
+              setCrop(e.target.value)
+            }
             disabled={busy}
           >
-            {CROPS.map((c) => (
-              <option key={c} value={c}>
-                {cropLabel(c)}
+            {CROPS.map((item) => (
+              <option
+                key={item}
+                value={item}
+              >
+                {cropLabel(item)}
               </option>
             ))}
           </select>
 
-          {/* Quantity */}
           <label className="label mt-3">
             {t.landing.qty}
           </label>
@@ -179,32 +192,39 @@ export default function NewListingPage() {
             type="number"
             min="1"
             value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
+            onChange={(e) =>
+              setQuantity(
+                Number(e.target.value)
+              )
+            }
             disabled={busy}
           />
 
-          {/* Quality */}
           <label className="label mt-3">
             {t.listing.quality}
           </label>
 
           <div className="flex gap-2">
-            {GRADES.map((g) => (
+            {GRADES.map((grade) => (
               <button
-                key={g}
+                key={grade}
                 type="button"
                 className={`btn flex-1 ${
-                  quality === g ? "btn-primary" : "btn-ghost"
+                  quality === grade
+                    ? "btn-primary"
+                    : "btn-ghost"
                 }`}
-                onClick={() => setQuality(g)}
+                onClick={() =>
+                  setQuality(grade)
+                }
                 disabled={busy}
               >
-                {gradeLabel(g)}
+                {t.listing?.grade || "Grade"}{" "}
+                {grade}
               </button>
             ))}
           </div>
 
-          {/* District */}
           <label className="label mt-3">
             {t.auth.district}
           </label>
@@ -212,17 +232,21 @@ export default function NewListingPage() {
           <select
             className="field"
             value={district}
-            onChange={(e) => setDistrict(e.target.value)}
+            onChange={(e) =>
+              setDistrict(e.target.value)
+            }
             disabled={busy}
           >
-            {DISTRICTS.map((d) => (
-              <option key={d} value={d}>
-                {d}
+            {DISTRICTS.map((item) => (
+              <option
+                key={item}
+                value={item}
+              >
+                {item}
               </option>
             ))}
           </select>
 
-          {/* Harvest date */}
           <label className="label mt-3">
             {t.listing.harvest}
           </label>
@@ -231,23 +255,25 @@ export default function NewListingPage() {
             className="field"
             type="date"
             value={harvest}
-            onChange={(e) => setHarvest(e.target.value)}
+            onChange={(e) =>
+              setHarvest(e.target.value)
+            }
             disabled={busy}
           />
 
-          {/* Preview */}
           <button
+            type="button"
             className="btn-gold mt-5 w-full"
             disabled={busy}
             onClick={preview}
           >
             {action === "preview"
-              ? t.listing?.loading || "Loading..."
+              ? t.listing?.loading ||
+                "Loading..."
               : t.listing.preview}
           </button>
         </div>
 
-        {/* Price panel */}
         <div className="card">
           {price ? (
             <>
@@ -256,15 +282,20 @@ export default function NewListingPage() {
               </p>
 
               <p className="font-display text-3xl">
-                ₹{formatNumber(price.recommended_price_min)} – ₹
-                {formatNumber(price.recommended_price_max)}
+                ₹
+                {formatNumber(
+                  price.recommended_price_min
+                )}{" "}
+                – ₹
+                {formatNumber(
+                  price.recommended_price_max
+                )}
               </p>
 
               <p className="mt-2 text-sm text-leaf-900/80">
                 {price.basis_explanation}
               </p>
 
-              {/* Asking price */}
               <label className="label mt-4">
                 {t.listing.ask}
               </label>
@@ -276,15 +307,21 @@ export default function NewListingPage() {
                 max={price.recommended_price_max}
                 step="1"
                 value={clampedAsk}
-                onChange={(e) => setAsk(Number(e.target.value))}
+                onChange={(e) =>
+                  setAsk(
+                    Number(e.target.value)
+                  )
+                }
                 disabled={busy}
               />
 
               <p className="text-2xl font-bold">
-                ₹{formatNumber(Math.round(clampedAsk))}
+                ₹
+                {formatNumber(
+                  Math.round(clampedAsk)
+                )}
               </p>
 
-              {/* Chart */}
               <PriceChart
                 history={price.history}
                 min={price.recommended_price_min}
@@ -292,14 +329,15 @@ export default function NewListingPage() {
                 target={price.target_price}
               />
 
-              {/* Publish */}
               <button
+                type="button"
                 className="btn-primary mt-4 w-full"
                 disabled={busy}
                 onClick={publish}
               >
                 {action === "publish"
-                  ? t.listing?.publishing || "Publishing..."
+                  ? t.listing?.publishing ||
+                    "Publishing..."
                   : t.listing.publish}
               </button>
             </>
