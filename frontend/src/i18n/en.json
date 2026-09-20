@@ -2,6 +2,7 @@
   "appName": "FarmLink AI",
   "tagline": "Sell your harvest at a fair price — no middlemen.",
   "offline": "Offline Mode (Cached Data)",
+
   "nav": {
     "home": "Home",
     "login": "Log in",
@@ -14,58 +15,90 @@
     "verify": "Verify GSTIN",
     "orders": "Orders"
   },
+
   "roles": {
     "farmer": "Farmer",
     "buyer": "Bulk buyer",
     "admin": "Admin"
   },
+
   "crops": {
-  "Wheat": "Wheat",
-  "Rice": "Rice",
-  "Potato": "Potato",
-  "Tomato": "Tomato",
-  "Cotton": "Cotton"
-},
-  "landing": {
- "heroBadge": "100% Direct Farmer ↔ Buyer Marketplace",
-"heroTitle1": "Farmer meets Buyer.",
-"heroTitle2": "Best Price.",
-"heroTitle3": "Zero Middlemen.",
-"demoLogin": "Demo Login:",
-"farmerDemo": "Farmer (9876540001)",
-"buyerDemo": "Buyer (9000000001)",
-"adminAccess": "Admin Access →",
-"realMandiFeed": "Real Mandi Feed",
-"selectCommodity": "Select Commodity",
-"harvestQuantity": "Harvest Quantity",
-"quintals": "Quintals",
-"govtMandiBenchmark": "Govt Mandi Benchmark:",
-"recommendedPrice": "FarmLink AI Recommended Price:",
-"farmerNetEarnings": "Farmer Net Earnings:",
-"farmerProfit": "Farmer Profit:",
-"vsMiddleman": "vs Middleman Cut",
-"liveMandiRates": "Live Mandi Rates:",
-"voiceSmsService": "Dedicated Voice & SMS Service",
-"noSmartphoneTitle": "No Smartphone? Call or SMS Our AI Service",
-"noSmartphoneBody": "Farmers without internet can dial or text our dedicated toll-free helpline. Speak naturally or send simple messages in Hindi, Marathi, or English to list crops and receive instant market rates.",
-"tryVoiceDemo": "Try Voice IVR Demo",
-"trySmsDemo": "Try SMS Simulator",
-"exampleSmsCommands": "Example SMS Commands:",
-"aiExtracts": "AI extracts crop, quantity, and location automatically.",
-"trustVerification": "Trust & Verification",
-"verificationTitle": "Why FarmLink Verification Matters",
-"verificationBody": "No anonymous buyers, no fictitious listings. Every user completes multi-step verification before direct contact details are shared.",
-"identityCheckTitle": "Identity & Mobile Check",
-"identityCheckBody": "Every farmer and buyer verifies their mobile via 6-digit OTP and completes sandbox KYC check.",
-"businessProofTitle": "Agricultural & Business Proof",
-"businessProofBody": "Farmers confirm land/FPO registration. Buyers submit valid GSTIN, Udyam, or municipal trade licence.",
-"directTradeTitle": "Direct Contact & Fair Trade",
-"directTradeBody": "Only verified buyers see direct farmer phone numbers, ensuring privacy, zero middlemen, and reliable payments.",
-"realMandiPricing": "Real Mandi Pricing",
-"verifiedFarmers": "Verified Farmers",
-"verifiedBuyers": "Verified Buyers",
-"middlemanCommission": "Middleman Commission"
+    "Wheat": "Wheat",
+    "Rice": "Rice",
+    "Potato": "Potato",
+    "Tomato": "Tomato",
+    "Cotton": "Cotton"
   },
+
+  "landing": {
+    "heroBadge": "100% Direct Farmer ↔ Buyer Marketplace",
+    "heroTitle1": "Farmer meets Buyer.",
+    "heroTitle2": "Best Price.",
+    "heroTitle3": "Zero Middlemen.",
+    "heroBody": "FarmLink AI connects verified Indian farmers directly to verified wholesale buyers. Real mandi prices, AI-calculated fair rates, zero commissions, and complete price transparency.",
+    "startFarmer": "Join as Farmer",
+    "startBuyer": "Join as Buyer",
+    "demoLogin": "Demo Login:",
+    "farmerDemo": "Farmer (9876540001)",
+    "buyerDemo": "Buyer (9000000001)",
+    "adminAccess": "Admin Access →",
+
+    "howTitle": "How it works",
+    "step1": "List your crop",
+    "step1b": "Form, voice call or SMS — large buttons, simple words.",
+    "step2": "See a fair price",
+    "step2b": "Prophet forecast and safe range. Choose your price within the recommended band.",
+    "step3": "Match with buyers",
+    "step3b": "Nearby verified buyers. Large quantities are automatically split.",
+    "step4": "Track and get paid",
+    "step4b": "Pickup route is shown. Money stays in escrow until delivery, then goes to your bank.",
+
+    "calcTitle": "AI Price Calculator",
+    "realMandiFeed": "Real Mandi Feed",
+    "selectCommodity": "Select Commodity",
+    "harvestQuantity": "Harvest Quantity",
+    "quintals": "Quintals",
+    "govtMandiBenchmark": "Govt Mandi Benchmark:",
+    "recommendedPrice": "FarmLink AI Recommended Price:",
+    "farmerNetEarnings": "Farmer Net Earnings:",
+    "farmerProfit": "Farmer Profit:",
+    "vsMiddleman": "vs Middleman Cut",
+
+    "calcHint": "Mandi traders may retain 30–40%. FarmLink keeps more value with the farmer.",
+    "crop": "Crop",
+    "qty": "Quantity (quintals)",
+    "mandiShare": "After middlemen (estimate)",
+    "farmlinkShare": "With FarmLink (estimate)",
+    "youKeep": "Extra savings",
+
+    "liveMandiRates": "Live Mandi Rates:",
+
+    "voiceSmsService": "Dedicated Voice & SMS Service",
+    "noSmartphoneTitle": "No Smartphone? Call or SMS Our AI Service",
+    "noSmartphoneBody": "Farmers without internet can dial or text our dedicated toll-free helpline. Speak naturally or send simple messages in Hindi, Marathi, or English to list crops and receive instant market rates.",
+    "tryVoiceDemo": "Try Voice IVR Demo",
+    "trySmsDemo": "Try SMS Simulator",
+    "exampleSmsCommands": "Example SMS Commands:",
+    "aiExtracts": "AI extracts crop, quantity, and location automatically.",
+
+    "trustVerification": "Trust & Verification",
+    "verificationTitle": "Why FarmLink Verification Matters",
+    "verificationBody": "No anonymous buyers, no fictitious listings. Every user completes multi-step verification before direct contact details are shared.",
+    "identityCheckTitle": "Identity & Mobile Check",
+    "identityCheckBody": "Every farmer and buyer verifies their mobile via 6-digit OTP and completes sandbox KYC check.",
+    "businessProofTitle": "Agricultural & Business Proof",
+    "businessProofBody": "Farmers confirm land/FPO registration. Buyers submit valid GSTIN, Udyam, or municipal trade licence.",
+    "directTradeTitle": "Direct Contact & Fair Trade",
+    "directTradeBody": "Only verified buyers see direct farmer phone numbers, ensuring privacy, zero middlemen, and reliable payments.",
+
+    "realMandiPricing": "Real Mandi Pricing",
+    "verifiedFarmers": "Verified Farmers",
+    "verifiedBuyers": "Verified Buyers",
+    "middlemanCommission": "Middleman Commission",
+
+    "demoNote": "Demo accounts are ready — no signup required to explore."
+  },
+
   "auth": {
     "welcomeBack": "Welcome back",
     "create": "Create your FarmLink account",
@@ -83,6 +116,7 @@
     "demoBuyer": "Demo buyer",
     "demoAdmin": "Demo admin"
   },
+
   "listing": {
     "title": "Create a crop listing",
     "subtitle": "AI will show a fair price before you publish.",
@@ -94,6 +128,7 @@
     "band": "Recommended band",
     "basis": "Why this price"
   },
+
   "farmer": {
     "hello": "Namaste",
     "active": "Active listings",
@@ -102,33 +137,47 @@
     "trends": "Cached price trends",
     "empty": "No listings yet. Create one to see matches."
   },
+
   "buyer": {
     "verifyFirst": "Verify your GSTIN to receive matches.",
     "feed": "Listings that fit your demand",
     "verified": "Verified buyer"
   },
+
   "order": {
     "track": "Order tracking",
     "escrow": "Escrow",
     "release": "Release payment to farmer",
     "advance": "Mark next status"
   },
+
   "admin": {
     "title": "Platform overview",
     "pending": "Buyer verification queue",
     "flags": "Escrow / transaction flags",
     "approve": "Approve"
   },
+
   "sim": {
     "voiceBadge": "Web Simulator (Production: Bhashini/Twilio).",
     "smsBadge": "Web Simulator (Production: MSG91).",
     "voiceTitle": "IVR voice assistant",
+    "voiceSubtitle": "AI voice assistant for farmers without internet or smartphones.",
+    "voiceHelpline": "TOLL-FREE VOICE HELPLINE",
     "smsTitle": "SMS command tester",
     "smsHint": "Try: LIST WHEAT 50 A NASHIK",
     "send": "Send",
     "call": "Start call",
-    "speak": "Speak / type reply"
+    "connecting": "Connecting...",
+    "speak": "Speak / type reply",
+    "microphone": "Speak via Microphone (Speech-to-Text)",
+    "audioAuto": "Audio synthesis plays automatically",
+    "typeUtterance": "Type speech utterance (e.g. Wheat, 50 quintals, Grade A, Nashik)",
+    "buyerMessage": "Your listing is live. We’ll notify you when a verified buyer matches.",
+    "languages": "Hindi · Marathi · English",
+    "startCallHint": "Click 'Start Call' to connect with the FarmLink AI conversational voice assistant."
   },
+
   "status": {
     "listed": "Listed",
     "matched": "Matched",
@@ -138,5 +187,21 @@
     "escrow_held": "In escrow",
     "released": "Released",
     "completed": "Completed"
+  },
+
+  "footer": {
+    "brandName": "FarmLink AI",
+    "description": "Direct Farmer ↔ Buyer Agricultural Marketplace. Real Agmarknet mandi benchmarks, AI-calculated fair price discovery, and multi-step trusted verification.",
+    "voiceSmsTitle": "Voice & SMS Helpline",
+    "available": "Available 24/7 in Hindi, Marathi, and English.",
+    "voiceIvr": "Voice IVR",
+    "smsHelpline": "SMS Helpline",
+    "platformSecurity": "Platform & Security",
+    "verifiedAccounts": "Multi-Step Verified Accounts",
+    "zeroCommission": "Zero Middlemen Commission",
+    "adminPortal": "Admin Portal",
+    "directTrade": "Direct Agriculture Trade",
+    "builtFor": "Built for Indian Farmers & Wholesale Buyers",
+    "mandiBenchmark": "Mandi Benchmark: data.gov.in / Agmarknet"
   }
 }
