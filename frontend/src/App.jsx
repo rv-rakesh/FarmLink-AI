@@ -1,45 +1,87 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { AuthProvider, useAuth } from "./context/AuthContext";
-import { LanguageProvider } from "./context/LanguageContext";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+} from "react-router-dom";
+
+import {
+  AuthProvider,
+  useAuth,
+} from "./context/AuthContext";
+
+import {
+  LanguageProvider,
+} from "./context/LanguageContext";
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import OfflineBanner from "./components/OfflineBanner";
+
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+
 import FarmerDashboard from "./pages/FarmerDashboard";
 import NewListingPage from "./pages/NewListingPage";
 import MatchedBuyersPage from "./pages/MatchedBuyersPage";
-import BuyerDashboard from "./pages/BuyerDashboard";
 import FarmerVerificationPage from "./pages/FarmerVerificationPage";
+
+import BuyerDashboard from "./pages/BuyerDashboard";
 import BuyerVerificationPage from "./pages/BuyerVerificationPage";
+
 import VerificationStatusPage from "./pages/VerificationStatusPage";
-import AdminVerificationPage from "./pages/AdminVerificationPage";
 import OrderTrackingPage from "./pages/OrderTrackingPage";
+
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminVerificationPage from "./pages/AdminVerificationPage";
+
 import VoiceCallPage from "./pages/VoiceCallPage";
 import SmsTestPage from "./pages/SmsTestPage";
 
 function Guard({ roles, children }) {
   const { user } = useAuth();
-  if (!user) return <Navigate to="/login" replace />;
-  if (roles && !roles.includes(user.role)) return <Navigate to="/" replace />;
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (
+    roles &&
+    !roles.includes(user.role)
+  ) {
+    return <Navigate to="/" replace />;
+  }
+
   return children;
 }
 
 function Shell() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex min-h-screen flex-col">
       <OfflineBanner />
+
       <Navbar />
+
       <main className="flex-1">
         <Routes>
-          {/* Landing Page is strictly rendered on / without auto-redirect */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
+          {/* Public */}
+          <Route
+            path="/"
+            element={<LandingPage />}
+          />
 
-          {/* Farmer Routes */}
+          <Route
+            path="/login"
+            element={<LoginPage />}
+          />
+
+          <Route
+            path="/signup"
+            element={<SignupPage />}
+          />
+
+          {/* Farmer */}
           <Route
             path="/farmer"
             element={
@@ -48,6 +90,7 @@ function Shell() {
               </Guard>
             }
           />
+
           <Route
             path="/farmer/new"
             element={
@@ -56,6 +99,7 @@ function Shell() {
               </Guard>
             }
           />
+
           <Route
             path="/farmer/matches/:listingId"
             element={
@@ -64,6 +108,7 @@ function Shell() {
               </Guard>
             }
           />
+
           <Route
             path="/farmer/verify"
             element={
@@ -73,7 +118,7 @@ function Shell() {
             }
           />
 
-          {/* Buyer Routes */}
+          {/* Buyer */}
           <Route
             path="/buyer"
             element={
@@ -82,6 +127,7 @@ function Shell() {
               </Guard>
             }
           />
+
           <Route
             path="/buyer/verify"
             element={
@@ -91,7 +137,7 @@ function Shell() {
             }
           />
 
-          {/* Shared Verification Status */}
+          {/* Shared */}
           <Route
             path="/verification/status"
             element={
@@ -101,7 +147,6 @@ function Shell() {
             }
           />
 
-          {/* Order Tracking */}
           <Route
             path="/orders/:orderId"
             element={
@@ -111,7 +156,7 @@ function Shell() {
             }
           />
 
-          {/* Admin Routes */}
+          {/* Admin */}
           <Route
             path="/admin"
             element={
@@ -120,6 +165,7 @@ function Shell() {
               </Guard>
             }
           />
+
           <Route
             path="/admin/verifications"
             element={
@@ -129,11 +175,25 @@ function Shell() {
             }
           />
 
-          {/* Voice & SMS Simulator */}
-          <Route path="/voice" element={<VoiceCallPage />} />
-          <Route path="/sms" element={<SmsTestPage />} />
+          {/* Voice / SMS */}
+          <Route
+            path="/voice"
+            element={<VoiceCallPage />}
+          />
+
+          <Route
+            path="/sms"
+            element={<SmsTestPage />}
+          />
+
+          {/* SPA fallback */}
+          <Route
+            path="*"
+            element={<Navigate to="/" replace />}
+          />
         </Routes>
       </main>
+
       <Footer />
     </div>
   );
