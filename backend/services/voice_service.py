@@ -1,10 +1,12 @@
-"""IVR prompt + STT/TTS parser. Bhashini adapter is a stub for later drop-in."""
+"""FarmLink AI multilingual voice NLU / IVR state machine."""
+import json
 import re
 from google import genai
+from google.genai import types
 from config import Config
 
-CROPS = {c.lower(): c for c in Config.CROPS}
-GRADE_WORDS = {"a": "A", "b": "B", "c": "C", "grade a": "A", "grade b": "B", "grade c": "C"}
+MODEL = "gemini-3.8-flash"
+LANGS = {"en", "hi", "mr"}
 
 PROMPTS = {
     "en": {
@@ -13,9 +15,9 @@ PROMPTS = {
         "grade": "What is the quality grade? A, B, or C.",
         "district": "Which district are you in?",
         "confirm": "I heard {crop}, {qty} quintals, grade {grade}, in {district}. Shall I get a fair price?",
-        "price": "Recommended price is rupees {min_p} to {max_p} per quintal. {explanation}",
-        "listed": "Your listing is live. Buyers will be matched shortly.",
-        "retry": "Sorry, I did not understand. Please try again.",
+        "retry": "Sorry, I did not understand. Please say that again.",
+        "retry_final": "I could not understand that after two tries. The call is ending. Please start a new call and try again.",
+        "no": "Okay. Let us start again. Which crop are you selling?",
     },
     "hi": {
         "welcome": "नमस्ते, यह फार्मलिंक एआई है। आप कौन सी फसल बेच रहे हैं? गेहूं, चावल, आलू, टमाटर या कपास।",
@@ -23,9 +25,9 @@ PROMPTS = {
         "grade": "गुणवत्ता ग्रेड क्या है? ए, बी या सी।",
         "district": "आप किस जिले में हैं?",
         "confirm": "मैंने सुना: {crop}, {qty} क्विंटल, ग्रेड {grade}, {district}। क्या मैं उचित भाव निकालूँ?",
-        "price": "सुझाया गया भाव {min_p} से {max_p} रुपये प्रति क्विंटल है। {explanation}",
-        "listed": "आपकी लिस्टिंग लाइव है। खरीदार जल्द जोड़े जाएंगे।",
-        "retry": "माफ़ कीजिए, समझ नहीं आया। फिर कोशिश करें।",
+        "retry": "माफ़ कीजिए, समझ नहीं आया। कृपया फिर से बोलें।",
+        "retry_final": "दो कोशिशों के बाद भी आपकी बात समझ नहीं आई। कॉल समाप्त हो रही है। कृपया नई कॉल शुरू करके फिर कोशिश करें।",
+        "no": "ठीक है। फिर से शुरू करते हैं। आप कौन सी फसल बेच रहे हैं?",
     },
     "mr": {
         "welcome": "नमस्कार, हे फार्मलिंक एआय आहे. तुम्ही कोणते पीक विकत आहात? गहू, तांदूळ, बटाटा, टोमॅटो किंवा कापूस.",
@@ -33,49 +35,59 @@ PROMPTS = {
         "grade": "गुणवत्ता ग्रेड काय आहे? ए, बी किंवा सी.",
         "district": "तुम्ही कोणत्या जिल्ह्यात आहात?",
         "confirm": "मी ऐकले: {crop}, {qty} क्विंटल, ग्रेड {grade}, {district}. योग्य भाव काढू का?",
-        "price": "सुचवलेला भाव {min_p} ते {max_p} रुपये प्रति क्विंटल आहे. {explanation}",
-        "listed": "तुमची लिस्टिंग लाइव्ह आहे. खरेदीदार लवकरच जुळतील.",
-        "retry": "माफ करा, समजले नाही. पुन्हा प्रयत्न करा.",
+        "retry": "माफ करा, समजले नाही. कृपया पुन्हा बोला.",
+        "retry_final": "दोन प्रयत्नांनंतरही तुमचे बोलणे समजले नाही. कॉल संपत आहे. कृपया नवीन कॉल सुरू करून पुन्हा प्रयत्न करा.",
+        "no": "ठीक आहे. पुन्हा सुरू करूया. तुम्ही कोणते पीक विकत आहात?",
     },
 }
 
 CROP_ALIASES = {
-    "wheat": "Wheat",
-    "gehun": "Wheat",
-    "gehūn": "Wheat",
-    "गेहूं": "Wheat",
-    "गहू": "Wheat",
-    "rice": "Rice",
-    "chawal": "Rice",
-    "चावल": "Rice",
-    "तांदूळ": "Rice",
-    "potato": "Potato",
-    "aloo": "Potato",
-    "आलू": "Potato",
-    "बटाटा": "Potato",
-    "tomato": "Tomato",
-    "tamatar": "Tomato",
-    "टमाटर": "Tomato",
-    "टोमॅटो": "Tomato",
-    "cotton": "Cotton",
+    "wheat": "Wheat", "गेहूं": "Wheat", "गहू": "Wheat",
+    "gehun": "Wheat", "rice": "Rice", "चावल": "Rice", "तांदूळ": "Rice",
+    "chawal": "Rice", "potato": "Potato", "आलू": "Potato", "बटाटा": "Potato",
+    "aloo": "Potato", "tomato": "Tomato", "टमाटर": "Tomato", "टोमॅटो": "Tomato",
+    "tamatar": "Tomato", "cotton": "Cotton", "कपास": "Cotton", "कापूस": "Cotton",
     "kapas": "Cotton",
-    "कपास": "Cotton",
-    "कापूस": "Cotton",
+}
+
+GRADE_ALIASES = {
+    "a": "A", "b": "B", "c": "C", "grade a": "A", "grade b": "B",
+    "grade c": "C", "ए": "A", "बी": "B", "सी": "C", "अ": "A", "ब": "B", "क": "C",
+}
+
+DISTRICT_ALIASES = {
+    "nashik": "Nashik", "nasik": "Nashik", "नाशिक": "Nashik", "नासिक": "Nashik",
+    "pune": "Pune", "पुणे": "Pune", "karnal": "Karnal", "करनाल": "Karnal",
+    "ludhiana": "Ludhiana", "लुधियाना": "Ludhiana", "nagpur": "Nagpur",
+    "नागपूर": "Nagpur", "नागपुर": "Nagpur", "ahmedabad": "Ahmedabad",
+    "अहमदाबाद": "Ahmedabad", "indore": "Indore", "इंदौर": "Indore",
+    "jaipur": "Jaipur", "जयपुर": "Jaipur", "hyderabad": "Hyderabad",
+    "हैदराबाद": "Hyderabad", "bengaluru": "Bengaluru", "bangalore": "Bengaluru",
+    "बेंगलुरु": "Bengaluru", "बंगलौर": "Bengaluru",
+}
+
+SCHEMA = {
+    "type": "object",
+    "properties": {
+        "crop": {"type": ["string", "null"]},
+        "quantity": {"type": ["number", "null"]},
+        "quantity_unit": {"type": ["string", "null"], "enum": ["quintal", "kg", "ton", None]},
+        "grade": {"type": ["string", "null"], "enum": ["A", "B", "C", None]},
+        "district": {"type": ["string", "null"]},
+        "confirmed": {"type": ["boolean", "null"]},
+        "language": {"type": "string", "enum": ["en", "hi", "mr"]},
+    },
+    "required": ["crop", "quantity", "quantity_unit", "grade", "district", "confirmed", "language"],
+    "additionalProperties": False,
 }
 
 
-class BhashiniAdapterStub:
-    """Production drop-in: replace speak/listen with Bhashini/Twilio APIs."""
-
-    def transcribe(self, audio_or_text, language="en"):
-        return str(audio_or_text or "").strip()
-
-    def synthesize(self, text, language="en"):
-        return {"tts_text": text, "provider": "bhashini_stub", "language": language}
+def prompt(lang, key, **kwargs):
+    return PROMPTS.get(lang, PROMPTS["en"])[key].format(**kwargs)
 
 
-def parse_crop(text):
-    t = (text or "").strip().lower()
+def normalize_crop(value):
+    t = str(value or "").strip().lower()
     if t in CROP_ALIASES:
         return CROP_ALIASES[t]
     for alias, crop in CROP_ALIASES.items():
@@ -84,196 +96,206 @@ def parse_crop(text):
     return None
 
 
-def parse_qty(text):
-    m = re.search(r"(\d+(?:\.\d+)?)", text or "")
-    return float(m.group(1)) if m else None
-
-
-def parse_grade(text):
-    t = (text or "").strip().lower()
-    if t in GRADE_WORDS:
-        return GRADE_WORDS[t]
+def normalize_grade(value):
+    t = str(value or "").strip().lower()
+    if t in GRADE_ALIASES:
+        return GRADE_ALIASES[t]
     m = re.search(r"\b([abc])\b", t)
     return m.group(1).upper() if m else None
 
 
-def parse_district(text):
-    t = (text or "").strip()
-    for d in Config.DISTRICTS:
-        if d.lower() == t.lower() or d.lower() in t.lower():
-            return d
-    return t.title() if t else None
+def normalize_district(value):
+    t = str(value or "").strip()
+    low = t.lower()
+    if not t:
+        return None
+    if low in DISTRICT_ALIASES:
+        return DISTRICT_ALIASES[low]
+    for alias, district in DISTRICT_ALIASES.items():
+        if alias in low:
+            return district
+    for district in getattr(Config, "DISTRICTS", []):
+        if district.lower() in low:
+            return district
+    return t
 
 
-def prompt(lang, key, **kwargs):
-    pack = PROMPTS.get(lang, PROMPTS["en"])
-    return pack[key].format(**kwargs) if kwargs else pack[key]
+def normalize_language(value, requested):
+    value = str(value or "").strip().lower()
+    return value if value in LANGS else (requested if requested in LANGS else "en")
+
+
+def normalize_quantity(value, unit):
+    if value is None:
+        return None
+    try:
+        qty = float(value)
+    except (TypeError, ValueError):
+        return None
+    unit = str(unit or "quintal").lower()
+    if unit == "kg":
+        qty /= 100.0
+    elif unit == "ton":
+        qty *= 10.0
+    return qty
+
+
+def format_qty(value):
+    if value is None:
+        return ""
+    return str(int(value)) if float(value).is_integer() else f"{value:.2f}".rstrip("0").rstrip(".")
+
+
+def gemini_extract(heard, step, data, requested_language):
+    api_key = str(getattr(Config, "GEMINI_API_KEY", "") or "").strip()
+    if not api_key:
+        raise RuntimeError("GEMINI_API_KEY is not configured")
+
+    client = genai.Client(api_key=api_key)
+    contents = f"""
+You are the natural-language understanding layer for FarmLink AI, a farmer voice assistant in India.
+
+Farmer utterance:
+{heard!r}
+
+Current IVR step:
+{step!r}
+
+Already collected:
+{json.dumps(data, ensure_ascii=False)}
+
+Extract only what the farmer actually said. Do not invent missing values.
+The farmer may speak Hindi, Marathi, Hinglish, English, transliterated Hindi/Marathi,
+or mixed language.
+
+Rules:
+- Crop must be one of Wheat, Rice, Potato, Tomato, Cotton.
+- Understand regional crop names such as टमाटर / टोमॅटो, गेहूं / गहू, आलू / बटाटा, कपास / कापूस.
+- Understand number words such as पचास, पन्नास, पंचवीस, fifty, twenty five.
+- quantity_unit must be quintal, kg, or ton. If no unit is spoken, use quintal.
+- confirmed=true only for a clear yes (yes, हाँ, हो, होय, ठीक है).
+- confirmed=false only for a clear no (no, नहीं, नको).
+- language is the language actually spoken: English=en, Hindi/Hinglish=hi, Marathi=mr.
+- Return canonical English district names when possible.
+"""
+    response = client.models.generate_content(
+        model=MODEL,
+        contents=contents,
+        config=types.GenerateContentConfig(
+            response_mime_type="application/json",
+            response_schema=SCHEMA,
+            temperature=0.0,
+            max_output_tokens=300,
+        ),
+    )
+    raw = (response.text or "").strip()
+    if not raw:
+        raise ValueError("Gemini returned an empty response")
+    result = json.loads(raw)
+    if not isinstance(result, dict):
+        raise ValueError("Gemini returned invalid JSON")
+    return result
 
 
 def next_ivr_step(session, utterance, language="en"):
-    """
-    Gemini-powered NLU for FarmLink voice flow.
-    Gemini extracts crop, quantity, grade, district and confirmation intent.
-    """
-
-    adapter = BhashiniAdapterStub()
-    heard = adapter.transcribe(utterance, language)
-
+    """Advance the voice conversation using Gemini for NLU."""
+    heard = str(utterance or "").strip()
     step = session.get("step", "welcome")
-    data = session.get("data") or {}
+    data = dict(session.get("data") or {})
+    retries = int(session.get("retries", 0) or 0)
+
+    if not heard:
+        return {
+            **session,
+            "step": step,
+            "data": data,
+            "retries": retries,
+            "reply": prompt(language if language in LANGS else "en", "welcome" if step == "welcome" else "retry"),
+        }
 
     try:
-        client = genai.Client(api_key=Config.GEMINI_API_KEY)
+        extracted = gemini_extract(heard, step, data, language)
+        lang = normalize_language(extracted.get("language"), language)
 
-        prompt_text = f"""
-You are the voice assistant for FarmLink AI, an agricultural marketplace.
+        crop = normalize_crop(extracted.get("crop"))
+        if crop:
+            data["crop"] = crop
 
-The farmer said:
-"{heard}"
+        qty = normalize_quantity(extracted.get("quantity"), extracted.get("quantity_unit"))
+        if qty is not None:
+            data["quantity"] = qty
 
-Current conversation step:
-"{step}"
+        grade = normalize_grade(extracted.get("grade"))
+        if grade:
+            data["quality"] = grade
 
-Existing data:
-{data}
+        district = normalize_district(extracted.get("district"))
+        if district:
+            data["district"] = district
 
-Extract the information relevant to the current step.
+        retries = 0
 
-Return ONLY valid JSON in this exact format:
-{{
-  "crop": null,
-  "quantity": null,
-  "grade": null,
-  "district": null,
-  "confirmed": null,
-  "language": "en"
-}}
+        if step == "welcome" and data.get("crop"):
+            return {"step": "qty", "data": data, "retries": 0, "reply": prompt(lang, "qty"), "language": lang}
 
-Rules:
-- crop must be one of: Wheat, Rice, Potato, Tomato, Cotton
-- quantity must be a number in quintals
-- grade must be A, B, or C
-- district should be the Indian district name if mentioned
-- confirmed should be true only if the farmer clearly agrees
-- use null when information is not present
-- language must be "en", "hi", or "mr" based on the farmer's spoken language
-- Hindi or Hinglish should return "hi"
-- Marathi should return "mr"
-- English should return "en"
-"""
+        if step == "qty" and data.get("quantity") is not None and data["quantity"] > 0:
+            return {"step": "grade", "data": data, "retries": 0, "reply": prompt(lang, "grade"), "language": lang}
 
-        response = client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=prompt_text,
-        )
+        if step == "grade" and data.get("quality"):
+            return {"step": "district", "data": data, "retries": 0, "reply": prompt(lang, "district"), "language": lang}
 
-        import json
-
-        raw = response.text.strip()
-        raw = raw.replace("```json", "").replace("```", "").strip()
-        extracted = json.loads(raw)
-        language = extracted.get("language") or language
-
-        if extracted.get("crop"):
-            data["crop"] = extracted["crop"]
-
-        if extracted.get("quantity") is not None:
-            data["quantity"] = float(extracted["quantity"])
-
-        if extracted.get("grade"):
-            data["quality"] = extracted["grade"]
-
-        if extracted.get("district"):
-            data["district"] = extracted["district"]
-
-        if step == "welcome":
-            if data.get("crop"):
-                return {
-                    "step": "qty",
-                    "data": data,
-                    "reply": prompt(language, "qty"),
-                }
-
+        if step == "district" and data.get("district"):
             return {
-                **session,
-                "step": "welcome",
+                "step": "confirm",
                 "data": data,
-                "reply": prompt(language, "retry"),
-            }
-
-        if step == "qty":
-            if data.get("quantity") is not None:
-                return {
-                    "step": "grade",
-                    "data": data,
-                    "reply": prompt(language, "grade"),
-                }
-
-            return {
-                **session,
-                "step": "qty",
-                "data": data,
-                "reply": prompt(language, "retry"),
-            }
-
-        if step == "grade":
-            if data.get("quality"):
-                return {
-                    "step": "district",
-                    "data": data,
-                    "reply": prompt(language, "district"),
-                }
-
-            return {
-                **session,
-                "step": "grade",
-                "data": data,
-                "reply": prompt(language, "retry"),
-            }
-
-        if step == "district":
-            if data.get("district"):
-                return {
-                    "step": "confirm",
-                    "data": data,
-                    "reply": prompt(
-                        language,
-                        "confirm",
-                        crop=data.get("crop"),
-                        qty=data.get("quantity"),
-                        grade=data.get("quality"),
-                        district=data.get("district"),
-                    ),
-                }
-
-            return {
-                **session,
-                "step": "district",
-                "data": data,
-                "reply": prompt(language, "retry"),
+                "retries": 0,
+                "reply": prompt(lang, "confirm", crop=data["crop"], qty=format_qty(data["quantity"]),
+                                grade=data["quality"], district=data["district"]),
+                "language": lang,
             }
 
         if step == "confirm":
             if extracted.get("confirmed") is True:
-                return {
-                    "step": "price",
-                    "data": data,
-                    "reply": None,
-                    "ready_for_price": True,
-                }
+                return {"step": "price", "data": data, "retries": 0, "reply": None,
+                        "ready_for_price": True, "language": lang}
+            if extracted.get("confirmed") is False:
+                return {"step": "welcome", "data": {}, "retries": 0,
+                        "reply": prompt(lang, "no"), "language": lang}
 
+        retries += 1
+        if retries >= 2:
             return {
-                "step": "welcome",
-                "data": {},
-                "reply": prompt(language, "welcome"),
+                "step": "ended",
+                "data": data,
+                "retries": retries,
+                "end_call": True,
+                "reply": prompt(lang, "retry_final"),
+                "language": lang,
             }
 
-    except Exception as e:
-        print("Gemini NLU error:", e)
+        return {"step": step, "data": data, "retries": retries,
+                "reply": prompt(lang, "retry"), "language": lang}
+
+    except Exception as exc:
+        print("Gemini NLU error:", repr(exc))
+        retries += 1
+        reply_lang = language if language in LANGS else "en"
+
+        if retries >= 2:
+            return {
+                "step": "ended",
+                "data": data,
+                "retries": retries,
+                "end_call": True,
+                "reply": prompt(reply_lang, "retry_final"),
+                "language": reply_lang,
+            }
 
         return {
             **session,
             "step": step,
             "data": data,
-            "reply": prompt(language, "retry"),
+            "retries": retries,
+            "reply": prompt(reply_lang, "retry"),
+            "language": reply_lang,
         }
