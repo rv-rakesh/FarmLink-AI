@@ -83,6 +83,15 @@ NUMBER_WORDS = {
 }
 
 AFFIRMATIVE = {"yes", "yeah", "yep", "ok", "okay", "haan", "han", "हाँ", "हां", "हो", "होय", "ठीक", "ठीक है", "yes please"}
+def normalize_confirmation(text):
+    t = str(text or "").strip().lower()
+    t = re.sub(r"[!?.,;:]+", " ", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    if t in AFFIRMATIVE:
+        return True
+    if t in NEGATIVE:
+        return False
+    return None
 NEGATIVE = {"no", "nope", "nah", "nahi", "नहीं", "नही", "नको", "नाही"}
 
 
@@ -176,11 +185,9 @@ def extract_local(heard, language):
         "quantity_unit": "quintal",
         "grade": normalize_grade(text),
         "district": normalize_district(text),
-        "confirmed": True if any(x in text for x in AFFIRMATIVE) else None,
+        "confirmed": normalize_confirmation(text),
         "language": language if language in LANGS else "en",
     }
-    if any(x in text for x in NEGATIVE):
-        result["confirmed"] = False
     if result["quantity"] is not None:
         if re.search(r"\b(?:kg|kgs|kilogram|kilograms|किलो|किलोग्राम)\b", text):
             result["quantity_unit"] = "kg"
@@ -249,6 +256,25 @@ def format_qty(value):
         return ""
     f = float(value)
     return str(int(f)) if f.is_integer() else f"{f:.2f}".rstrip("0").rstrip(".")
+
+
+DISPLAY_NAMES = {
+    "mr": {
+        "Wheat": "गहू", "Rice": "तांदूळ", "Potato": "बटाटा",
+        "Tomato": "टोमॅटो", "Cotton": "कापूस",
+        "A": "ए", "B": "बी", "C": "सी",
+        "Vijayawada": "विजयवाडा",
+    },
+    "hi": {
+        "Wheat": "गेहूं", "Rice": "चावल", "Potato": "आलू",
+        "Tomato": "टमाटर", "Cotton": "कपास",
+        "A": "ए", "B": "बी", "C": "सी",
+        "Vijayawada": "विजयवाड़ा",
+    },
+}
+
+def display_value(value, language):
+    return DISPLAY_NAMES.get(language, {}).get(str(value), value)
 
 
 def next_ivr_step(session, utterance, language="en"):
@@ -335,27 +361,41 @@ def next_ivr_step(session, utterance, language="en"):
                     "reply": prompt(
                         lang,
                         "confirm",
-                        crop=data.get("crop"),
+                        crop=display_value(data.get("crop"), lang),
                         qty=format_qty(data.get("quantity")),
-                        grade=data.get("quality"),
-                        district=data.get("district"),
+                        grade=display_value(data.get("quality"), lang),
+                        district=display_value(data.get("district"), lang),
                     ),
                     "language": lang,
                 }
 
         elif step == "confirm":
-            confirmed = extracted.get("confirmed")
-            if confirmed is True or local.get("confirmed") is True:
+            # Keep the farmer's selected language. A reply such as "Yes" must
+            # not switch the IVR to English.
+            lang = requested_lang
+            confirmed = normalize_confirmation(heard)
+            if confirmed is None:
+                confirmed = local.get("confirmed")
+            if confirmed is None:
+                confirmed = extracted.get("confirmed")
+
+            if confirmed is True:
                 return {
                     "step": "price",
                     "data": data,
                     "retries": 0,
                     "reply": None,
                     "ready_for_price": True,
-                    "language": lang,
+                    "language": requested_lang,
                 }
-            if confirmed is False or local.get("confirmed") is False:
-                return {"step": "welcome", "data": {}, "retries": 0, "reply": prompt(lang, "no"), "language": lang}
+            if confirmed is False:
+                return {
+                    "step": "welcome",
+                    "data": {},
+                    "retries": 0,
+                    "reply": prompt(requested_lang, "no"),
+                    "language": requested_lang,
+                }
 
         retries += 1
         if retries >= 2:
@@ -396,10 +436,10 @@ def next_ivr_step(session, utterance, language="en"):
                 "reply": prompt(
                     requested_lang,
                     "confirm",
-                    crop=data.get("crop"),
+                    crop=display_value(data.get("crop"), requested_lang),
                     qty=format_qty(data.get("quantity")),
-                    grade=data.get("quality"),
-                    district=data.get("district"),
+                    grade=display_value(data.get("quality"), requested_lang),
+                    district=display_value(data.get("district"), requested_lang),
                 ),
                 "language": requested_lang,
             }
