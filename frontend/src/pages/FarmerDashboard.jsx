@@ -72,33 +72,38 @@ export default function FarmerDashboard() {
       setError("");
 
       try {
-        const [
-          listingsRes,
-          alertsRes,
-          verification,
-          priceData,
-        ] = await Promise.all([
+        // Load only the essential dashboard data first.
+        // The price recommendation is loaded separately so it does not
+        // delay the dashboard appearing after login.
+        const [listingsRes, alertsRes, verification] = await Promise.all([
           api.get("/api/listings"),
           api.get("/api/alerts/wastage"),
           getFarmerVerificationStatus().catch(() => null),
-          recommendPrice({
-            crop: "Wheat",
-            quantity: 1,
-            quality: "B",
-            district: user?.district || "Nashik",
-          }).catch(() => null),
         ]);
 
         setListings(listingsRes.data || []);
         setAlerts(alertsRes.data || []);
         setVerif(verification);
+        setLoading(false);
 
-        if (priceData) {
-          setTrend(priceData);
-          cacheTrends(priceData);
-        } else {
-          setTrend(readCachedTrends());
-        }
+        // Load the trend after the main dashboard is already visible.
+        recommendPrice({
+          crop: "Wheat",
+          quantity: 1,
+          quality: "B",
+          district: user?.district || "Nashik",
+        })
+          .then((priceData) => {
+            if (priceData) {
+              setTrend(priceData);
+              cacheTrends(priceData);
+            } else {
+              setTrend(readCachedTrends());
+            }
+          })
+          .catch(() => {
+            setTrend(readCachedTrends());
+          });
       } catch (e) {
         setError(
           e?.response?.data?.error ||
