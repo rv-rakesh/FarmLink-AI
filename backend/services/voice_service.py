@@ -305,10 +305,39 @@ def next_ivr_step(session, utterance, language="en"):
             "language": requested_lang,
         }
 
+    # Fast path: handle simple, deterministic answers locally first.
+    # This avoids waiting for Gemini for inputs such as "Tomato", "50",
+    # "A", or a known district, while Gemini remains the fallback NLU
+    # for natural/ambiguous utterances.
+    local = extract_local(heard, requested_lang)
+
+    if step == "welcome" and local.get("crop"):
+        data["crop"] = local["crop"]
+        return {"step": "qty", "data": data, "retries": 0, "reply": prompt(requested_lang, "qty"), "language": requested_lang}
+
+    if step == "qty" and local.get("quantity") is not None and local["quantity"] > 0:
+        data["quantity"] = local["quantity"]
+        return {"step": "grade", "data": data, "retries": 0, "reply": prompt(requested_lang, "grade"), "language": requested_lang}
+
+    if step == "grade" and local.get("grade"):
+        data["quality"] = local["grade"]
+        return {"step": "district", "data": data, "retries": 0, "reply": prompt(requested_lang, "district"), "language": requested_lang}
+
+    if step == "district" and local.get("district"):
+        data["district"] = local["district"]
+        return {"step": "confirm", "data": data, "retries": 0, "reply": prompt(requested_lang, "confirm", crop=display_value(data.get("crop"), requested_lang), qty=format_qty(data.get("quantity")), grade=display_value(data.get("quality"), requested_lang), district=display_value(data.get("district"), requested_lang)), "language": requested_lang}
+
+    if step == "confirm":
+        confirmed = normalize_confirmation(heard)
+        if confirmed is not None:
+            if confirmed is True:
+                return {"step": "price", "data": data, "retries": 0, "reply": None, "ready_for_price": True, "language": requested_lang}
+            return {"step": "welcome", "data": {}, "retries": 0, "reply": prompt(requested_lang, "no"), "language": requested_lang}
+
+    # Only call Gemini when the deterministic parser could not resolve
+    # the current answer.
     try:
         extracted = gemini_extract(heard, step, data, requested_lang)
-        # Always allow exact/local normalization to clean up Gemini's entity spelling.
-        local = extract_local(heard, requested_lang)
         lang = normalize_language(extracted.get("language"), requested_lang)
 
         crop = normalize_crop(extracted.get("crop")) or local.get("crop")
