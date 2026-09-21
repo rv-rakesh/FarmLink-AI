@@ -33,20 +33,22 @@ export function AuthProvider({ children }) {
     setToken(token);
   }, [token]);
 
-  const login = async (payload) => {
-    const { data } = await api.post("/api/auth/login", payload);
+const login = async (payload) => {
+  const { data } = await api.post("/api/auth/login", payload);
 
-    setTok(data.token);
-    setUser(data.user);
+  
+  localStorage.setItem("fl_token", data.token);
+  localStorage.setItem("fl_user", JSON.stringify(data.user));
 
-    localStorage.setItem("fl_token", data.token);
-    localStorage.setItem("fl_user", JSON.stringify(data.user));
+  
+  setToken(data.token);
 
-    setToken(data.token);
+  
+  setTok(data.token);
+  setUser(data.user);
 
-    return data.user;
-  };
-
+  return data.user;
+};
   const signup = async (payload) => {
     const { data } = await api.post("/api/auth/signup", payload);
 
