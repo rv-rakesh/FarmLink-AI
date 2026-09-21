@@ -53,18 +53,26 @@ export default function VoiceSimulator() {
           )
       );
 
-      const indianEnglishVoice =
-        voices.find((voice) =>
-          voice.lang
-            ?.toLowerCase()
-            .startsWith("en-in")
-        );
+      // Never fall back to an English voice for Hindi/Marathi.
+      // Doing that makes Marathi replies sound like English or fail
+      // to pronounce Devanagari correctly.
+      const isIndianLanguage =
+        targetLang === "hi-IN" || targetLang === "mr-IN";
 
-      const voice =
-        exactVoice ||
-        regionalVoice ||
-        indianEnglishVoice ||
-        voices[0];
+      const voice = isIndianLanguage
+        ? exactVoice || regionalVoice
+        : exactVoice ||
+          regionalVoice ||
+          voices.find((voice) =>
+            voice.lang
+              ?.toLowerCase()
+              .startsWith("en-in")
+          ) ||
+          voices[0];
+
+      // If the browser has no Hindi/Marathi voice installed,
+      // let the browser use the requested language instead of
+      // forcing an English voice.
 
       const utterance =
         new SpeechSynthesisUtterance(message);
