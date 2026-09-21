@@ -25,89 +25,50 @@ export default function VoiceSimulator() {
       ? "mr-IN"
       : "en-IN";
 
-  const speak = (message) => {
-    if (
-      !message ||
-      typeof window === "undefined" ||
-      !window.speechSynthesis
-    ) {
-      return;
+  const speak = (message, serverTts = null) => {
+    if (!message || typeof window === "undefined") return;
+
+    // Prefer real server-generated audio. This supports Marathi even when
+    // Chrome/Windows has no Marathi browser voice installed.
+    if (serverTts?.audio_base64) {
+      try {
+        const audio = new Audio(
+          `data:${serverTts.mime_type || "audio/mpeg"};base64,${serverTts.audio_base64}`
+        );
+        audio.play().catch((err) => {
+          console.warn("Server TTS playback failed:", err);
+        });
+        return;
+      } catch (err) {
+        console.warn("Server TTS setup failed:", err);
+      }
     }
+
+    // Browser fallback for cases where server TTS is unavailable.
+    if (!window.speechSynthesis) return;
 
     const synth = window.speechSynthesis;
-
-    const speakNow = () => {
-      const voices = synth.getVoices();
-
-      const exactVoice = voices.find(
-        (voice) =>
-          voice.lang?.toLowerCase() ===
-          targetLang.toLowerCase()
-      );
-
-      const regionalVoice = voices.find((voice) =>
-        voice.lang
-          ?.toLowerCase()
-          .startsWith(
-            targetLang.slice(0, 2).toLowerCase()
-          )
-      );
-
-      // Never fall back to an English voice for Hindi/Marathi.
-      // Doing that makes Marathi replies sound like English or fail
-      // to pronounce Devanagari correctly.
-      const isIndianLanguage =
-        targetLang === "hi-IN" || targetLang === "mr-IN";
-
-      const voice = isIndianLanguage
-        ? exactVoice || regionalVoice
-        : exactVoice ||
-          regionalVoice ||
-          voices.find((voice) =>
-            voice.lang
-              ?.toLowerCase()
-              .startsWith("en-in")
-          ) ||
-          voices[0];
-
-      // If the browser has no Hindi/Marathi voice installed,
-      // let the browser use the requested language instead of
-      // forcing an English voice.
-
-      const utterance =
-        new SpeechSynthesisUtterance(message);
-
-      utterance.lang = targetLang;
-      utterance.rate = 0.95;
-      utterance.pitch = 1;
-
-      if (voice) {
-        utterance.voice = voice;
-      }
-
-      synth.cancel();
-      synth.speak(utterance);
-    };
-
+    const targetLang =
+      lang === "hi" ? "hi-IN" : lang === "mr" ? "mr-IN" : "en-IN";
     const voices = synth.getVoices();
-
-    if (voices.length > 0) {
-      speakNow();
-      return;
-    }
-
-    const handleVoicesChanged = () => {
-      synth.removeEventListener(
-        "voiceschanged",
-        handleVoicesChanged
-      );
-      speakNow();
-    };
-
-    synth.addEventListener(
-      "voiceschanged",
-      handleVoicesChanged
+    const exactVoice = voices.find(
+      (voice) => voice.lang?.toLowerCase() === targetLang.toLowerCase()
     );
+    const regionalVoice = voices.find((voice) =>
+      voice.lang?.toLowerCase().startsWith(targetLang.slice(0, 2).toLowerCase())
+    );
+
+    // Never use an English voice for Marathi/Hindi text.
+    const voice = exactVoice || regionalVoice;
+    if (lang !== "en" && !voice) return;
+
+    const utterance = new SpeechSynthesisUtterance(message);
+    utterance.lang = targetLang;
+    utterance.rate = 0.95;
+    utterance.pitch = 1;
+    if (voice) utterance.voice = voice;
+    synth.cancel();
+    synth.speak(utterance);
   };
 
   useEffect(() => {
@@ -177,7 +138,7 @@ export default function VoiceSimulator() {
       ]);
 
       if (reply) {
-        speak(reply);
+        speak(reply, data?.tts);
       }
 
       setText("");
@@ -200,7 +161,7 @@ export default function VoiceSimulator() {
         },
       ]);
 
-      speak(errorText);
+      speak(errorText, data?.tts);
     } finally {
       setBusy(false);
     }
